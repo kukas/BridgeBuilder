@@ -22,7 +22,7 @@ namespace BridgeBuilder
         {
             foreach (var v in simulation.Vertices)
             {
-                RenderVertex(v, 10, (x, y, s) => {
+                RenderVertex(v, v.Radius, (x, y, s) => {
                     if (interaction.Selected.Contains(v))
                         g.FillEllipse(Brushes.White, x, y, s, s);
                     else

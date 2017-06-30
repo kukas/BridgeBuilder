@@ -12,10 +12,13 @@ namespace BridgeBuilder
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
 
-        public decimal Damping { get; set; } = 0.001M;
-        public decimal Stiffness { get; set; } = 0.001M;
+        public decimal Damping { get; set; } = 0.007M;
+        public decimal Stiffness { get; set; } = 0.015M;
         public decimal GravitationStrength { get; set; } = 10000M;
-        public decimal DraggingStrength { get; set; } = 500M;
+        public decimal DraggingStrength { get; set; } = 5000M;
+        public decimal DraggingDamping { get; set; } = 500M;
+        public decimal GroundStrength { get; set; } = 50000M;
+        public decimal GroundDamping { get; set; } = 50M;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -28,12 +31,12 @@ namespace BridgeBuilder
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
            
-            var board = new Vertex[1, 2];
+            var board = new Vertex[5, 5];
             for (int x = 0; x < board.GetLength(0); x++)
             {
                 for (int y = 0; y < board.GetLength(1); y++)
                 {
-                    board[x, y] = new Vertex(this, x * 50 + 100, y * 50 + 100);
+                    board[x, y] = new Vertex(this, x * 20 + 100, y * 20 + 100);
                     Vertices.Add(board[x, y]);
                 }
             }

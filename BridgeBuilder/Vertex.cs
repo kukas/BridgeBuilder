@@ -8,6 +8,18 @@ using System.Threading.Tasks;
 
 namespace BridgeBuilder
 {
+    class State
+    {
+        public PointF x = new PointF();      // position
+        public PointF v = new PointF();      // velocity
+    };
+
+    class Derivative
+    {
+        public PointF dx = new PointF();      // dx/dt = velocity
+        public PointF dv = new PointF();      // dv/dt = acceleration
+    };
+
     class Vertex
     {
         private Simulation simulation;
@@ -29,15 +41,45 @@ namespace BridgeBuilder
         public Vertex(Simulation simulation, float x, float y)
         {
             this.simulation = simulation;
-            Position = new PointF(x, y);
+            Position = nPosition = new PointF(x, y);
             Neighbours = new ConcurrentBag<Edge>();
         }
         // http://gafferongames.com/game-physics/integration-basics/
-        public void Update(float dt)
+        public Derivative Evaluate(State initial, float t, float dt, Derivative d)
         {
-            if (Fixed)
-                return;
+            State state = new State();
+            state.x = initial.x.Add(d.dx.MultiplyScalar(dt));
+            state.v = initial.v.Add(d.dv.MultiplyScalar(dt));
 
+            Derivative output = new Derivative();
+            output.dx = state.v;
+            output.dv = ComputeForces(state, t + dt);
+            return output;
+        }
+
+        void Integrate(State state, float t, float dt)
+        {
+            Derivative a, b, c, d;
+
+            a = Evaluate(state, t, 0.0f, new Derivative());
+            b = Evaluate(state, t, dt * 0.5f, a);
+            c = Evaluate(state, t, dt * 0.5f, b);
+            d = Evaluate(state, t, dt, c);
+
+            //float dxdt = 1.0f / 6.0f *
+            //    (a.dx + 2.0f * (b.dx + c.dx) + d.dx);
+            PointF dxdt = a.dx.Add(b.dx.Add(c.dx).MultiplyScalar(2)).Add(d.dx).MultiplyScalar(1.0f / 6.0f);
+
+            //float dvdt = 1.0f / 6.0f *
+            //    (a.dv + 2.0f * (b.dv + c.dv) + d.dv);
+            PointF dvdt = a.dv.Add(b.dv.Add(c.dv).MultiplyScalar(2)).Add(d.dv).MultiplyScalar(1.0f / 6.0f);
+
+            state.x = state.x.Add(dxdt.MultiplyScalar(dt));
+            state.v = state.v.Add(dvdt.MultiplyScalar(dt));
+        }
+
+        private PointF ComputeForces(State state, float t)
+        {
             PointF force = new PointF();
             if (simulation.Gravitation)
                 force.Y = (float)simulation.GravitationStrength;
@@ -45,47 +87,47 @@ namespace BridgeBuilder
             {
                 var v = edge.GetOpposite(this);
 
-                var toV = v.Position.Sub(Position);
+                var toV = v.Position.Sub(state.x);
                 var distance = toV.Mag();
                 var spring = toV.MultiplyScalar(edge.Length / distance);
                 var x = toV.Sub(spring);
-                var f = x.MultiplyScalar((float)simulation.Stiffness / (2*dt*dt));
+                var f = x.MultiplyScalar((float)simulation.Stiffness * 1E6f / 2f);
 
-                var dv = v.Velocity.Sub(Velocity).MultiplyScalar((float)simulation.Damping / dt);
-                // var dv = new PointF();
+                var dv = v.Velocity.Sub(state.v).MultiplyScalar((float)simulation.Damping * 1E3f);
 
                 force = force.Add(f).Add(dv);
-                // force = force.Add(dv);
-                /*
-                var toV = v.Position.Sub(Position);
-                var distance = toV.Mag();
-                var spring = toV.MultiplyScalar(edge.Length / distance);
-
-                var springDelta = toV.Sub(spring).MultiplyScalar((float)simulation.Stiffness);
-
-                var damping = v.Velocity.Sub(Velocity).MultiplyScalar(-(float)simulation.Damping);
-                force.X += springDelta.X - damping.X;
-                force.Y += springDelta.Y - damping.Y;
-                */
             }
-
-            var drag = Velocity.MultiplyScalar(-1);
+            /*
+            var drag = state.v.MultiplyScalar(-1);
             force = force.Add(drag);
-
-            if (Position.Y > simulation.Height)
-                force.Y -= (Position.Y - simulation.Height)*10;
+            */
+            if (state.x.Y + Radius > simulation.Height)
+                force.Y -= (state.x.Y + Radius - simulation.Height) * (float)simulation.GroundStrength + Velocity.Y* (float)simulation.GroundDamping;
 
             if (targetSet)
             {
-                //Position = target;
-                
-                var draggingForce = target.Sub(Position).MultiplyScalar((float)simulation.DraggingStrength);
-                force = force.Add(draggingForce);
+                var draggingForce = target.Sub(state.x).MultiplyScalar((float)simulation.DraggingStrength);
+                var damping = state.v.MultiplyScalar(-(float)simulation.DraggingDamping);
+                force = force.Add(draggingForce).Add(damping);
             }
-            
-            nVelocity = Velocity.Add(force.MultiplyScalar(dt));
-            var dPosition = Velocity.MultiplyScalar(dt);
-            nPosition = Position.Add(dPosition);
+            return force;
+        }
+
+        public void Update(float dt)
+        {
+            if (Fixed)
+                return;
+
+            State now = new State();
+            now.x = Position;
+            now.v = Velocity;
+            Integrate(now, 0, dt);
+
+            //nVelocity = Velocity.Add(force.MultiplyScalar(dt));
+            //var dPosition = Velocity.MultiplyScalar(dt);
+            //nPosition = Position.Add(dPosition);
+            nVelocity = now.v;
+            nPosition = now.x;
         }
 
         internal void Step()
