@@ -140,5 +140,10 @@ namespace BridgeBuilder
         {
             simulation.Gravitation = checkBox1.Checked;
         }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            simulationRenderer.RenderStrain = checkBox2.Checked;
+        }
     }
 }
