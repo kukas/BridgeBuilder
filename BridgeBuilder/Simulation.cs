@@ -12,10 +12,10 @@ namespace BridgeBuilder
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
 
-        public decimal Damping { get; set; } = 0.06000000M;
-        public decimal Stiffness { get; set; } = 5M;
-        public decimal GravitationStrength { get; set; } = 10M;
-        public decimal DraggingStrength { get; set; } = 5M;
+        public decimal Damping { get; set; } = 0.001M;
+        public decimal Stiffness { get; set; } = 0.001M;
+        public decimal GravitationStrength { get; set; } = 10000M;
+        public decimal DraggingStrength { get; set; } = 500M;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -27,14 +27,37 @@ namespace BridgeBuilder
             this.Width = width;
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
+           
+            var board = new Vertex[1, 2];
+            for (int x = 0; x < board.GetLength(0); x++)
+            {
+                for (int y = 0; y < board.GetLength(1); y++)
+                {
+                    board[x, y] = new Vertex(this, x * 50 + 100, y * 50 + 100);
+                    Vertices.Add(board[x, y]);
+                }
+            }
+            for (int x = 0; x < board.GetLength(0); x++)
+            {
+                for (int y = 0; y < board.GetLength(1); y++)
+                {
+                    for (int dx = Math.Max(x-1, 0); dx <= Math.Min(x+1, board.GetLength(0)-1); dx++)
+                    {
+                        for (int dy = Math.Max(y - 1, 0); dy <= Math.Min(y + 1, board.GetLength(1)-1); dy++)
+                        {
+                            if(dx > x || dy > y)
+                                board[x, y].AddEdge(board[dx, dy]);
+                        }
+                    }
+                }
+            }
+            Vertices.First().Neighbours.First().Length -= 5;
         }
 
         public void Update(float dt)
         {
-            foreach(var v in Vertices)
-            {
-                v.Update(dt);
-            }
+            foreach(var v in Vertices) v.Update(dt);
+            foreach (var v in Vertices) v.Step();
         }
 
         public void AddVertex(float x, float y)

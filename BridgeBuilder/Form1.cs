@@ -89,14 +89,14 @@ namespace BridgeBuilder
             Stopwatch sw = new Stopwatch();
             sw.Start();
             double last = 0;
-            int precision = 5;
+            int precision = 1;
             while (running)
             {
                 double now = sw.Elapsed.TotalMilliseconds;
-                double dt = (now - last) / 1000 / precision;
+                double dt = (now - last);
                 for (int i = 0; i < precision; i++)
                 {
-                    simulation.Update((float)dt);
+                    simulation.Update(0.001f);
                 }
                 last = now;
                 Thread.Sleep(1);
