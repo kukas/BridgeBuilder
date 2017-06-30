@@ -6,9 +6,9 @@ namespace BridgeBuilder
     internal class FpsMeter
     {
         Stopwatch sw = new Stopwatch();
-        long last = 0;
+        double last = 0;
 
-        public float FPS { get; internal set; }
+        public double FPS { get; internal set; }
 
         public FpsMeter()
         {
@@ -17,14 +17,13 @@ namespace BridgeBuilder
 
         public int Next()
         {
-            long now = sw.ElapsedMilliseconds;
-            long dt = now - last;
+            double now = sw.Elapsed.TotalMilliseconds;
+            double dt = now - last;
             last = now;
-            FPS = 1000f / dt;
+            FPS = 1000 / dt;
 
             long goal = 1000 / 30;
             int wait = Math.Max((int)(goal - dt), 0);
-            // Debug.WriteLine(wait);
             return wait;
         }
     }

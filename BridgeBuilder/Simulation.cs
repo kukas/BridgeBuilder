@@ -12,7 +12,7 @@ namespace BridgeBuilder
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
 
-        public decimal Damping { get; set; } = 0.1M;
+        public decimal Damping { get; set; } = 0.06000000M;
         public decimal Stiffness { get; set; } = 5M;
         public decimal GravitationStrength { get; set; } = 10M;
         public decimal DraggingStrength { get; set; } = 5M;

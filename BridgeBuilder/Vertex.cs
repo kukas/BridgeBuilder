@@ -57,7 +57,7 @@ namespace BridgeBuilder
             force = force.Add(drag);
 
             if (Position.Y > simulation.Height)
-                force.Y -= Position.Y - simulation.Height;
+                force.Y -= (Position.Y - simulation.Height)*10;
 
             if (targetSet)
             {
