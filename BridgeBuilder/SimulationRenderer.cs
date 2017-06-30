@@ -23,7 +23,7 @@ namespace BridgeBuilder
             foreach (var v in simulation.Vertices)
             {
                 RenderVertex(v, 10, (x, y, s) => {
-                    if (v.Selected)
+                    if (interaction.Selected.Contains(v))
                         g.FillEllipse(Brushes.White, x, y, s, s);
                     else
                         g.DrawEllipse(Pens.White, x, y, s, s);
@@ -40,12 +40,13 @@ namespace BridgeBuilder
                     g.DrawLine(Pens.White, v.Position, u.Position);
                 }
             }
-            /*
-            if (connector.Selected != null)
-                RenderVertex(connector.Selected, 14, (x, y, s) => {
+
+            if (interaction.Connector.First != null)
+            {
+                RenderVertex(interaction.Connector.First, 14, (x, y, s) => {
                     g.DrawEllipse(Pens.White, x, y, s, s);
                 });
-                */
+            }
         }
 
         private void RenderVertex(Vertex v, float size, Action<float, float, float> render)

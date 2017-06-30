@@ -103,23 +103,23 @@ namespace BridgeBuilder
         // mouse events
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            simulation.MouseDown(e);
+            interaction.MouseDown(e);
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            simulation.MouseMove(e);
+            interaction.MouseMove(e);
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            simulation.MouseUp(e);
+            interaction.MouseUp(e);
         }
 
         // keyboard events
         private void Form1_KeyPress(object sender, KeyEventArgs e)
         {
-            simulation.KeyPress(e);
+            interaction.KeyPress(e);
         }
 
         // GUI interaction events

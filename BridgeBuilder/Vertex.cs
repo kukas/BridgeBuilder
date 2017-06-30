@@ -10,9 +10,17 @@ namespace BridgeBuilder
 {
     class Vertex
     {
+        private Simulation simulation;
+
         public ConcurrentBag<Edge> Neighbours;
         public PointF Position;
-        public PointF Velocity;
+        public PointF Velocity = new PointF();
+
+        public bool Fixed = false;
+        public float Radius = 10;
+
+        private PointF target;
+        private bool targetSet = false;
 
         public Vertex(Simulation simulation, float x, float y)
         {
@@ -20,13 +28,6 @@ namespace BridgeBuilder
             Position = new PointF(x, y);
             Neighbours = new ConcurrentBag<Edge>();
         }
-
-        public bool Selected = false;
-
-        public bool Fixed = false;
-        private Simulation simulation;
-
-        public bool Dragging = false;
 
         public void Update(float dt)
         {
@@ -58,21 +59,30 @@ namespace BridgeBuilder
             if (Position.Y > simulation.Height)
                 force.Y -= Position.Y - simulation.Height;
 
-            /*
-            if (Dragging)
+            if (targetSet)
             {
-                var toMouse = simulation.MousePosition.Sub(Position).MultiplyScalar(0.005f);
-                force = force.Add(toMouse);
+                var draggingForce = target.Sub(Position).MultiplyScalar(0.005f);
+                force = force.Add(draggingForce);
             }
-            */
+
             Velocity = Velocity.Add(force);
         }
 
-        internal void AddEdge(Vertex selected2)
+        internal void AddEdge(Vertex neighbour)
         {
-            Edge edge = new Edge(this, selected2);
-            this.Neighbours.Add(edge);
-            selected2.Neighbours.Add(edge);
+            Edge edge = new Edge(this, neighbour);
+            Neighbours.Add(edge);
+            neighbour.Neighbours.Add(edge);
+        }
+
+        public void SetTarget(PointF target)
+        {
+            this.target = target;
+            targetSet = true;
+        }
+        public void ResetTarget()
+        {
+            targetSet = false;
         }
     }
 }
