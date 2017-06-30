@@ -22,7 +22,8 @@ namespace BridgeBuilder
         {
             foreach (var v in simulation.Vertices)
             {
-                RenderVertex(v, v.Radius, (x, y, s) => {
+                RenderVertex(v, v.Radius, (x, y, s) =>
+                {
                     if (interaction.Selected.Contains(v))
                         g.FillEllipse(Brushes.White, x, y, s, s);
                     else
@@ -30,20 +31,22 @@ namespace BridgeBuilder
                 });
                 if (v.Fixed)
                 {
-                    RenderVertex(v, 14, (x, y, s) => {
+                    RenderVertex(v, 14, (x, y, s) =>
+                    {
                         g.DrawRectangle(Pens.White, x, y, s, s);
                     });
                 }
                 foreach (var edge in v.Neighbours)
                 {
                     var u = edge.GetOpposite(v);
-                  g.DrawLine(Pens.White, v.Position, u.Position);
+                    g.DrawLine(Pens.White, v.Position, u.Position);
                 }
             }
 
             if (interaction.Connector.First != null)
             {
-                RenderVertex(interaction.Connector.First, 14, (x, y, s) => {
+                RenderVertex(interaction.Connector.First, 14, (x, y, s) =>
+                {
                     g.DrawEllipse(Pens.White, x, y, s, s);
                 });
             }
