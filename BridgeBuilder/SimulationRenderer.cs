@@ -37,7 +37,7 @@ namespace BridgeBuilder
                 foreach (var edge in v.Neighbours)
                 {
                     var u = edge.GetOpposite(v);
-                    g.DrawLine(Pens.White, v.Position, u.Position);
+                  g.DrawLine(Pens.White, v.Position, u.Position);
                 }
             }
 

@@ -33,12 +33,12 @@ namespace BridgeBuilder
         {
             if (Fixed)
                 return;
-            var dPosition = Velocity.Clone().MultiplyScalar(dt);
+            var dPosition = Velocity.MultiplyScalar(dt);
             Position = Position.Add(dPosition);
 
             PointF force = new PointF();
             if (simulation.Gravitation)
-                force.Y = 0.1f;
+                force.Y = (float)simulation.GravitationStrength;
             foreach (var edge in Neighbours)
             {
                 var v = edge.GetOpposite(this);
@@ -61,7 +61,7 @@ namespace BridgeBuilder
 
             if (targetSet)
             {
-                var draggingForce = target.Sub(Position).MultiplyScalar(0.005f);
+                var draggingForce = target.Sub(Position).MultiplyScalar((float)simulation.DraggingStrength);
                 force = force.Add(draggingForce);
             }
 

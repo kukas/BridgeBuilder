@@ -55,7 +55,7 @@ namespace BridgeBuilder
                 simulationRenderer.Render(g);
                 
                 // draw debugging FPS info
-                double currentFps = Math.Round(fps.Frame(), 1);
+                double currentFps = Math.Round(fps.FPS, 1);
                 g.FillRectangle(Brushes.Black, new Rectangle(0, 0, 150, 30));
                 g.DrawString($"fps: {currentFps}", new Font("Arial", 16), new SolidBrush(Color.White), 10, 10);
 
@@ -78,6 +78,9 @@ namespace BridgeBuilder
 
                 // switch canvases (double buffering)
                 db.Switch();
+
+                // sleep to prevent unnecessary rendering
+                Thread.Sleep(fps.Next());
             }
         }
 
@@ -96,6 +99,8 @@ namespace BridgeBuilder
                     simulation.Update(dt);
                 }
                 last = now;
+                Debug.WriteLine(dt);
+                Thread.Sleep(5);
             }
             sw.Stop();
         }

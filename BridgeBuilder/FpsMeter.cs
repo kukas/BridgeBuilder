@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace BridgeBuilder
 {
@@ -7,17 +8,24 @@ namespace BridgeBuilder
         Stopwatch sw = new Stopwatch();
         long last = 0;
 
+        public float FPS { get; internal set; }
+
         public FpsMeter()
         {
             sw.Start();
         }
 
-        public float Frame()
+        public int Next()
         {
             long now = sw.ElapsedMilliseconds;
-            long dt = now-last;
+            long dt = now - last;
             last = now;
-            return 1000f / dt;
+            FPS = 1000f / dt;
+
+            long goal = 1000 / 30;
+            int wait = Math.Max((int)(goal - dt), 0);
+            // Debug.WriteLine(wait);
+            return wait;
         }
     }
 }

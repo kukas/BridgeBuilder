@@ -35,9 +35,5 @@ namespace BridgeBuilder
             point.Y *= s;
             return point;
         }
-        public static PointF Clone(this PointF point)
-        {
-            return new PointF(point.X, point.Y);
-        }
     }
 }
