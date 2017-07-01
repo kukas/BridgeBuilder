@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace BridgeBuilder
 {
+    [Serializable]
     class Edge
     {
         public Vertex V { get; }
         public Vertex U { get; }
         public float Length;
+
         public Edge(Vertex v, Vertex u)
         {
             V = v;

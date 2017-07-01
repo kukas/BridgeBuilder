@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -92,13 +95,15 @@ namespace BridgeBuilder
             int precision = 1;
             while (running)
             {
+                Simulation s = simulation;
                 double now = sw.Elapsed.TotalMilliseconds;
                 double dt = (now - last);
                 for (int i = 0; i < precision; i++)
                 {
-                    simulation.Update(0.001f);
+                    s.Update(0.001f);
                 }
                 last = now;
+
                 Thread.Sleep(1);
             }
             sw.Stop();
@@ -144,6 +149,28 @@ namespace BridgeBuilder
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             simulationRenderer.RenderStrain = checkBox2.Checked;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("MyFile.bin",
+                                     FileMode.Create,
+                                     FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, simulation);
+            stream.Close();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("MyFile.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Simulation loadedSimulation = (Simulation)formatter.Deserialize(stream);
+            simulation.LoadSimulation(loadedSimulation);
+            stream.Close();
         }
     }
 }

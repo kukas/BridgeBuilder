@@ -8,12 +8,13 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
+    [Serializable]
     class Simulation
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
 
-        public decimal Damping { get; set; } = 0.007M;
-        public decimal Stiffness { get; set; } = 0.015M;
+        public decimal Damping { get; set; } = 0.01M;
+        public decimal Stiffness { get; set; } = 0.1M;
         public decimal GravitationStrength { get; set; } = 10000M;
         public decimal DraggingStrength { get; set; } = 5000M;
         public decimal DraggingDamping { get; set; } = 500M;
@@ -31,7 +32,7 @@ namespace BridgeBuilder
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
            
-            var board = new Vertex[5, 5];
+            var board = new Vertex[1, 1];
             for (int x = 0; x < board.GetLength(0); x++)
             {
                 for (int y = 0; y < board.GetLength(1); y++)
@@ -54,7 +55,6 @@ namespace BridgeBuilder
                     }
                 }
             }
-            Vertices.First().Neighbours.First().Length -= 5;
         }
 
         public void Update(float dt)
@@ -66,6 +66,11 @@ namespace BridgeBuilder
         public void AddVertex(float x, float y)
         {
             Vertices.Add(new Vertex(this, x, y));
+        }
+
+        internal void LoadSimulation(Simulation loadedSimulation)
+        {
+            Vertices = loadedSimulation.Vertices;
         }
     }
 }

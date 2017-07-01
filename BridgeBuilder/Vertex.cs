@@ -20,6 +20,7 @@ namespace BridgeBuilder
         public PointF dv = new PointF();      // dv/dt = acceleration
     };
 
+    [Serializable]
     class Vertex
     {
         private Simulation simulation;
@@ -44,6 +45,7 @@ namespace BridgeBuilder
             Position = nPosition = new PointF(x, y);
             Neighbours = new ConcurrentBag<Edge>();
         }
+
         // http://gafferongames.com/game-physics/integration-basics/
         public Derivative Evaluate(State initial, float t, float dt, Derivative d)
         {
@@ -94,6 +96,7 @@ namespace BridgeBuilder
                 var f = x.MultiplyScalar((float)simulation.Stiffness * 1E6f / 2f);
 
                 var dv = v.Velocity.Sub(state.v).MultiplyScalar((float)simulation.Damping * 1E3f);
+                // var dv = 
 
                 force = force.Add(f).Add(dv);
             }
@@ -123,6 +126,7 @@ namespace BridgeBuilder
             now.v = Velocity;
             Integrate(now, 0, dt);
 
+            // euler
             //nVelocity = Velocity.Add(force.MultiplyScalar(dt));
             //var dPosition = Velocity.MultiplyScalar(dt);
             //nPosition = Position.Add(dPosition);
