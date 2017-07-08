@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
+    [Serializable]
     class Simulation
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
@@ -70,6 +71,7 @@ namespace BridgeBuilder
         internal void LoadSimulation(Simulation loadedSimulation)
         {
             Vertices = loadedSimulation.Vertices;
+            foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
         }
     }
 }

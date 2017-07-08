@@ -81,6 +81,11 @@ namespace BridgeBuilder
             state.v = state.v.Add(dvdt.MultiplyScalar(dt));
         }
 
+        public void SetSimulation(Simulation simulation)
+        {
+            this.simulation = simulation;
+        }
+
         private PointF ComputeForces(State state, float t)
         {
             PointF force = new PointF();
