@@ -100,7 +100,7 @@ namespace BridgeBuilder
                 double dt = (now - last);
                 for (int i = 0; i < precision; i++)
                 {
-                    s.Update(0.001f);
+                    s.Update(0.001f/precision);
                 }
                 last = now;
 

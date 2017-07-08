@@ -12,11 +12,12 @@ namespace BridgeBuilder
     class Simulation
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
+        public ConcurrentBag<Edge> Edges { get; private set; }
 
         public decimal Damping { get; set; } = 0.01M;
-        public decimal Stiffness { get; set; } = 0.1M;
+        public decimal Stiffness { get; set; } = 1M;
         public decimal GravitationStrength { get; set; } = 10000M;
-        public decimal DraggingStrength { get; set; } = 5000M;
+        public decimal DraggingStrength { get; set; } = 50000M;
         public decimal DraggingDamping { get; set; } = 500M;
         public decimal GroundStrength { get; set; } = 50000M;
         public decimal GroundDamping { get; set; } = 50M;
@@ -25,13 +26,15 @@ namespace BridgeBuilder
         public int Height { get; private set; }
 
         public bool Gravitation = false;
+        
 
         public Simulation(int width, int height)
         {
             this.Width = width;
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
-           
+            Edges = new ConcurrentBag<Edge>();
+
             var board = new Vertex[1, 1];
             for (int x = 0; x < board.GetLength(0); x++)
             {
@@ -50,7 +53,7 @@ namespace BridgeBuilder
                         for (int dy = Math.Max(y - 1, 0); dy <= Math.Min(y + 1, board.GetLength(1)-1); dy++)
                         {
                             if(dx > x || dy > y)
-                                board[x, y].AddEdge(board[dx, dy]);
+                                AddEdge(board[x, y], board[dx, dy]);
                         }
                     }
                 }
@@ -60,7 +63,17 @@ namespace BridgeBuilder
         public void Update(float dt)
         {
             foreach (var v in Vertices) v.Update(dt);
-            foreach (var v in Vertices) v.Step();
+            for (int i = 0; i < 5; i++)
+            {
+                foreach (var v in Vertices) v.ResetConstrains();
+                foreach (var e in Edges) e.Relax();
+                foreach (var v in Vertices) v.ApplyConstrains();
+            }
+        }
+
+        public void AddEdge(Vertex vertex1, Vertex vertex2)
+        {
+            Edges.Add(new Edge(vertex1, vertex2));
         }
 
         public void AddVertex(float x, float y)
@@ -71,6 +84,7 @@ namespace BridgeBuilder
         internal void LoadSimulation(Simulation loadedSimulation)
         {
             Vertices = loadedSimulation.Vertices;
+            Edges = loadedSimulation.Edges;
             foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
         }
     }

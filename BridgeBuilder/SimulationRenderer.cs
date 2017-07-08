@@ -48,7 +48,6 @@ namespace BridgeBuilder
             double getB(double value)
             {
                 return linear(value, 0.75, 1.0) + (linear(value, 0, 57.0 / 200.0) - linear(value, 63.0 / 200.0, 120.0 / 200.0)) * 0.5;
-                // return 1.0 - linear(value, 0, 0.5);
             }
 
             public Color GetColor(double v)
@@ -78,18 +77,23 @@ namespace BridgeBuilder
                         g.DrawRectangle(Pens.White, x, y, s, s);
                     });
                 }
-                foreach (var edge in v.Neighbours)
+            }
+            foreach (var e in simulation.Edges)
+            {
+                Vertex u = e.U;
+                Vertex v = e.V;
+                Pen p = Pens.White;
+                if (RenderStrain)
                 {
-                    var u = edge.GetOpposite(v);
-                    Pen p = Pens.White;
-                    if (RenderStrain)
-                    {
-                        float maxStrain = 8;
-                        var strain = Math.Min(Math.Abs(edge.Length - u.Position.Sub(v.Position).Mag()), maxStrain);
-                        p = new Pen(straincolor.GetColor(strain / maxStrain), 2);
-                    }
-                    g.DrawLine(p, v.Position, u.Position);
+                    float maxStrain = 3;
+                    var delta = e.Length - u.Position.Sub(v.Position).Mag();
+                    var strain = Math.Min(Math.Abs(delta), maxStrain);
+                    p = new Pen(straincolor.GetColor(strain / maxStrain), 2);
+
+                    var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
+                    g.DrawString(String.Format("{0:0.0}", delta), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
                 }
+                g.DrawLine(p, v.Position, u.Position);
             }
 
             if (interaction.Connector.First != null)

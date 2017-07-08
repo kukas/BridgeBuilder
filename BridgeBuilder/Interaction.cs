@@ -49,7 +49,7 @@ namespace BridgeBuilder
                         Vertex Second = interaction.Selected.First();
                         if (Second != null && Second != First)
                         {
-                            First.AddEdge(Second);
+                            interaction.simulation.AddEdge(First,Second);
                         }
                         First = null;
                     }
@@ -114,6 +114,7 @@ namespace BridgeBuilder
                 foreach (var v in Dragging)
                 {
                     v.Position = Snap(MousePosition);
+                    v.PrevPos = Snap(MousePosition);
                 }
             }
         }
