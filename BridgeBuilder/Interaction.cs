@@ -18,6 +18,7 @@ namespace BridgeBuilder
         public IEnumerable<Vertex> Selected { get; private set; } = Enumerable.Empty<Vertex>();
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
         public bool SnapToGrid = false;
+        public int GridSize = 10;
 
         public Interaction(Simulation simulation)
         {
@@ -95,9 +96,8 @@ namespace BridgeBuilder
 
         private PointF Snap(PointF position)
         {
-            int gridSize = 10;
-            float x = (float)Math.Round((double)position.X / gridSize) * gridSize;
-            float y = (float)Math.Round((double)position.Y / gridSize) * gridSize;
+            float x = (float)Math.Round((double)position.X / GridSize) * GridSize;
+            float y = (float)Math.Round((double)position.Y / GridSize) * GridSize;
             return new PointF(x, y);
         }
 
@@ -130,25 +130,12 @@ namespace BridgeBuilder
                     v.SetTarget(MousePosition);
                 }
             }
-
-            if (!SnapToGrid)
-            {
-                
-            }
-            else
-            {
-                foreach (var v in Dragging)
-                {
-                    
-                }
-            }
         }
 
         internal void MouseUp(MouseEventArgs e)
         {
             mouse = e;
-            if(!SnapToGrid)
-                foreach (var v in Dragging) v.ResetTarget();
+            foreach (var v in Dragging) v.ResetTarget();
             Dragging = Enumerable.Empty<Vertex>();
         }
     }

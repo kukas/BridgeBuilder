@@ -61,6 +61,14 @@ namespace BridgeBuilder
 
         public void Render(Graphics g)
         {
+            if (interaction.SnapToGrid)
+            {
+                Brush b = Brushes.DimGray;
+                for (int x = 0; x < simulation.Width; x += interaction.GridSize)
+                    for (int y = 0; y < simulation.Height; y += interaction.GridSize)
+                        g.FillRectangle(b, x, y, 1, 1);
+
+            }
             foreach (var v in simulation.Vertices)
             {
                 RenderVertex(v, v.Radius, (x, y, s) =>
