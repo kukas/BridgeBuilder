@@ -172,5 +172,10 @@ namespace BridgeBuilder
             simulation.LoadSimulation(loadedSimulation);
             stream.Close();
         }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            interaction.SnapToGrid = ((CheckBox)sender).Checked;
+        }
     }
 }

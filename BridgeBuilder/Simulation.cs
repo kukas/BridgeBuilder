@@ -8,7 +8,6 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
-    [Serializable]
     class Simulation
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
@@ -59,7 +58,7 @@ namespace BridgeBuilder
 
         public void Update(float dt)
         {
-            foreach(var v in Vertices) v.Update(dt);
+            foreach (var v in Vertices) v.Update(dt);
             foreach (var v in Vertices) v.Step();
         }
 
