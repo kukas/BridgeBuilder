@@ -18,7 +18,7 @@ namespace BridgeBuilder
         {
             V = v;
             U = u;
-            Length = V.Position.Sub(U.Position).Mag();
+            ResetLength();
         }
 
         public Vertex GetOpposite(Vertex v)
@@ -56,6 +56,11 @@ namespace BridgeBuilder
             if (!U.Fixed)
                 U.Position = U.Position.Add(delta.MultiplyScalar(-ratio * 0.5f));
             */
+        }
+
+        internal void ResetLength()
+        {
+            Length = V.Position.Sub(U.Position).Mag();
         }
     }
 }

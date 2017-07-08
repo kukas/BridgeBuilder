@@ -38,6 +38,10 @@ namespace BridgeBuilder
             numericUpDown2.DataBindings.Add("Value", simulation, "Damping", true, DataSourceUpdateMode.OnPropertyChanged);
             numericUpDown1.DataBindings.Add("Value", simulation, "Stiffness", true, DataSourceUpdateMode.OnPropertyChanged);
 
+            pauseToggle.Checked = simulation.Pause;
+            gravitationToggle.Checked = simulation.Gravitation;
+            stressToggle.Checked = simulationRenderer.RenderStrain;
+
             db = new DoubleBuffer(width, height);
 
             rendererThread = new Thread(RenderLoop);
@@ -141,14 +145,14 @@ namespace BridgeBuilder
             Close();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void gravitationToggle_CheckedChanged(object sender, EventArgs e)
         {
-            simulation.Gravitation = checkBox1.Checked;
+            simulation.Gravitation = gravitationToggle.Checked;
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void stressToggle_CheckedChanged(object sender, EventArgs e)
         {
-            simulationRenderer.RenderStrain = checkBox2.Checked;
+            simulationRenderer.RenderStrain = stressToggle.Checked;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -176,6 +180,11 @@ namespace BridgeBuilder
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             interaction.SnapToGrid = ((CheckBox)sender).Checked;
+        }
+
+        private void pauseToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            simulation.Pause = ((CheckBox)sender).Checked;
         }
     }
 }

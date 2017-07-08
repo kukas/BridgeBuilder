@@ -107,14 +107,39 @@ namespace BridgeBuilder
             var MousePosition = new PointF(e.X, e.Y);
             Selected = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
 
-            if(!SnapToGrid)
-                foreach (var v in Dragging) v.SetTarget(MousePosition);
+            foreach (var v in Dragging)
+            {
+                if (simulation.Pause)
+                {
+                    if (SnapToGrid)
+                    {
+                        v.Position = Snap(MousePosition);
+                        v.PrevPos = Snap(MousePosition);
+                    }
+                    else
+                    {
+                        v.Position = MousePosition;
+                        v.PrevPos = MousePosition;
+                    }
+                    IEnumerable<Edge> affectedEdges = simulation.GetEdges(v);
+                    foreach (var edge in affectedEdges)
+                        edge.ResetLength();
+                }
+                else
+                {
+                    v.SetTarget(MousePosition);
+                }
+            }
+
+            if (!SnapToGrid)
+            {
+                
+            }
             else
             {
                 foreach (var v in Dragging)
                 {
-                    v.Position = Snap(MousePosition);
-                    v.PrevPos = Snap(MousePosition);
+                    
                 }
             }
         }

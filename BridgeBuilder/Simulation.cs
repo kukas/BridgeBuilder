@@ -25,7 +25,8 @@ namespace BridgeBuilder
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public bool Gravitation = false;
+        public bool Pause = true;
+        public bool Gravitation = true;
         
 
         public Simulation(int width, int height)
@@ -62,6 +63,7 @@ namespace BridgeBuilder
 
         public void Update(float dt)
         {
+            if (Pause) return;
             foreach (var v in Vertices) v.Update(dt);
             for (int i = 0; i < 5; i++)
             {
@@ -86,6 +88,11 @@ namespace BridgeBuilder
             Vertices = loadedSimulation.Vertices;
             Edges = loadedSimulation.Edges;
             foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
+        }
+
+        internal IEnumerable<Edge> GetEdges(Vertex v)
+        {
+            return Edges.Where(edge => edge.U == v || edge.V == v);
         }
     }
 }
