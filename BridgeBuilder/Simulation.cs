@@ -29,7 +29,7 @@ namespace BridgeBuilder
 
         public bool Pause = true;
         public bool Gravitation = true;
-        
+        public float MaxStrain = 0.01f;
 
         public Simulation(int width, int height)
         {
@@ -72,12 +72,14 @@ namespace BridgeBuilder
             }
             if (Pause) return;
             foreach (var v in Vertices) v.Update(dt);
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 foreach (var v in Vertices) v.ResetConstrains();
                 foreach (var e in Edges) e.Relax();
                 foreach (var v in Vertices) v.ApplyConstrains();
             }
+            var tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
+            RemoveEdges(tooStrained);
         }
 
         public Vertex AddVertex(float x, float y)

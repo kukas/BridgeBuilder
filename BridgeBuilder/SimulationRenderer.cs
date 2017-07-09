@@ -93,13 +93,13 @@ namespace BridgeBuilder
                 Pen p = Pens.White;
                 if (RenderStrain)
                 {
-                    float maxStrain = 3;
-                    var delta = e.Length - u.Position.Sub(v.Position).Mag();
+                    float maxStrain = simulation.MaxStrain;
+                    var delta = 1 - e.CurrentLength/e.Length;
                     var strain = Math.Min(Math.Abs(delta), maxStrain);
                     p = new Pen(straincolor.GetColor(strain / maxStrain), 2);
 
                     var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
-                    g.DrawString(String.Format("{0:0.0}", delta), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
+                    g.DrawString(String.Format("{0:0.00}", strain / maxStrain), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
                 }
                 if (interaction.SelectedEdges.Contains(e))
                     p = new Pen(Color.White, 2);

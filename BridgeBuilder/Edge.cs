@@ -12,6 +12,8 @@ namespace BridgeBuilder
     {
         public Vertex V { get; }
         public Vertex U { get; }
+        public float CurrentLength { get { return U.Position.Sub(V.Position).Mag(); } }
+
         public float Length;
 
         public Edge(Vertex v, Vertex u)
@@ -60,7 +62,7 @@ namespace BridgeBuilder
 
         internal void ResetLength()
         {
-            Length = V.Position.Sub(U.Position).Mag();
+            Length = CurrentLength;
         }
     }
 }
