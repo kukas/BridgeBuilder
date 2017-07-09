@@ -25,9 +25,6 @@ namespace BridgeBuilder
         public PointF MousePosition = new PointF();
 
         private bool placingRoads = false;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public bool PlacingRoads {
             get { return placingRoads; }
             set {
@@ -35,6 +32,19 @@ namespace BridgeBuilder
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlacingRoads"));
             }
         }
+
+        private bool fixingVertices = false;
+        public bool FixingVertices
+        {
+            get { return fixingVertices; }
+            set
+            {
+                fixingVertices = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixingVertices"));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Interaction(Simulation simulation)
         {
@@ -216,9 +226,8 @@ namespace BridgeBuilder
         internal void KeyUp(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F)
-            {
-                foreach (var v in Hover) v.Fixed = !v.Fixed;
-            }
+                FixingVertices = false;
+
             if (e.KeyCode == Keys.D)
             {
                 simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
@@ -229,6 +238,9 @@ namespace BridgeBuilder
 
         internal void KeyDown(KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.F)
+                FixingVertices = true;
+
             if (Control.ModifierKeys == Keys.Shift)
                 PlacingRoads = true;
         }
@@ -240,6 +252,9 @@ namespace BridgeBuilder
             // LEVÉ TLAČÍTKO
             if (e.Button == MouseButtons.Left)
             {
+                if (FixingVertices && Hover.Any())
+                    foreach (var v in Hover) v.Fixed = !v.Fixed;
+
                 // levé tlačítko myši přesouvá body
                 Dragging = Hover.ToList(); // copy selected
 

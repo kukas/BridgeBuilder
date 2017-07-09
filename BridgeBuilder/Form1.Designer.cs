@@ -47,6 +47,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.roadToggle = new System.Windows.Forms.CheckBox();
+            this.fixingToggle = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).BeginInit();
@@ -244,6 +245,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.fixingToggle);
             this.groupBox4.Controls.Add(this.roadToggle);
             this.groupBox4.Location = new System.Drawing.Point(634, 466);
             this.groupBox4.Name = "groupBox4";
@@ -261,7 +263,16 @@
             this.roadToggle.TabIndex = 0;
             this.roadToggle.Text = "place roads";
             this.roadToggle.UseVisualStyleBackColor = true;
-            this.roadToggle.CheckedChanged += new System.EventHandler(this.roadToggle_CheckedChanged);
+            // 
+            // fixingToggle
+            // 
+            this.fixingToggle.AutoSize = true;
+            this.fixingToggle.Location = new System.Drawing.Point(7, 41);
+            this.fixingToggle.Name = "fixingToggle";
+            this.fixingToggle.Size = new System.Drawing.Size(68, 17);
+            this.fixingToggle.TabIndex = 1;
+            this.fixingToggle.Text = "fix vertex";
+            this.fixingToggle.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -313,6 +324,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox roadToggle;
+        private System.Windows.Forms.CheckBox fixingToggle;
     }
 }
 

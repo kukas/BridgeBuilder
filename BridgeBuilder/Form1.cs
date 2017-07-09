@@ -36,10 +36,13 @@ namespace BridgeBuilder
             testingStress = new TestingStress(simulation);
             simulationRenderer = new SimulationRenderer(simulation, interaction, testingStress);
 
+            // one-way databinding (hodnoty nezmění nic jiného než GUI)
             speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
 
+            // two-way databinding
             roadToggle.DataBindings.Add("Checked", interaction, "PlacingRoads", true, DataSourceUpdateMode.OnPropertyChanged);
+            fixingToggle.DataBindings.Add("Checked", interaction, "FixingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
 
             pauseToggle.Checked = simulation.Pause;
             gravitationToggle.Checked = simulation.Gravitation;
@@ -211,11 +214,6 @@ namespace BridgeBuilder
         {
             if(!simulation.Pause)
                 testingStress.StartTest();
-        }
-        // interaction
-        private void roadToggle_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
