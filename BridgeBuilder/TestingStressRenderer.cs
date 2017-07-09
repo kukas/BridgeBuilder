@@ -17,7 +17,8 @@ namespace BridgeBuilder
             if (testingStress.Started)
             {
                 Pen p = Pens.White;
-                g.DrawEllipse(p, testingStress.Position.X, testingStress.Position.Y, 10, 10);
+                float size = (float)testingStress.Weight / 1000f;
+                g.DrawEllipse(p, testingStress.Position.X - size / 2, testingStress.Position.Y - size, size, size);
             }
         }
     }
