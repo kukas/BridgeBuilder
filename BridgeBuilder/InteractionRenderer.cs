@@ -8,9 +8,15 @@ namespace BridgeBuilder
     {
         private Interaction interaction;
 
+        private Pen dashedPen;
+
         public InteractionRenderer(Interaction interaction)
         {
             this.interaction = interaction;
+
+            float[] dashValues = { 2, 4 };
+            dashedPen = new Pen(Color.White, 1);
+            dashedPen.DashPattern = dashValues;
         }
 
         public override void Render(Graphics g)
@@ -35,9 +41,6 @@ namespace BridgeBuilder
                         candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
                     }
 
-                    float[] dashValues = { 2, 4 };
-                    Pen dashedPen = new Pen(Color.White, 1);
-                    dashedPen.DashPattern = dashValues;
                     if (interaction.Connector.CanConnect(candidate))
                         g.DrawLine(dashedPen, candidate, First.Position);
                     RenderVertex(candidate, 10, (x, y, s) =>
@@ -46,6 +49,12 @@ namespace BridgeBuilder
                     });
                 }
             }
+
+            if (interaction.AddingVertices)
+                RenderVertex(interaction.StickyMousePosition, 10, (x, y, s) =>
+                {
+                    g.DrawEllipse(dashedPen, x, y, s, s);
+                });
         }
     }
 }

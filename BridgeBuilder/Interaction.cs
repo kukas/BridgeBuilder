@@ -276,7 +276,8 @@ namespace BridgeBuilder
                 }
 
                 // levé tlačítko myši přesouvá body
-                Dragging = Hover.ToList(); // copy selected
+                if(!Connector.Selected)
+                    Dragging = Hover.ToList(); // copy selected
 
                 // také vytváří nové spoje (pokud neběží simulace)
                 if (simulation.Pause)
@@ -311,11 +312,16 @@ namespace BridgeBuilder
             // PRAVÉ TLAČÍTKO
             if (e.Button == MouseButtons.Right)
             {
-                // smaže vybrané hrany
-                if (HoverEdges.Any())
-                    simulation.RemoveEdges(HoverEdges);
-                if (Hover.Any())
-                    simulation.RemoveVertices(Hover);
+                // jen pokud není už selektlý bod. Bylo to otravné
+                if (!Connector.Selected)
+                {
+                    // smaže vybrané hrany
+                    if (HoverEdges.Any())
+                        simulation.RemoveEdges(HoverEdges);
+                    if (Hover.Any())
+                        simulation.RemoveVertices(Hover);
+                }
+                
                 // zruší výběr
                 Connector.Cancel();
             }
