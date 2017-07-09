@@ -14,12 +14,14 @@ namespace BridgeBuilder
         private Thread rendererThread;
         private Thread simulationThread;
         private bool running = true;
+        private double simulationTime = 0;
 
         private Simulation simulation;
         private FpsMeter fps = new FpsMeter();
         private DoubleBuffer db;
         private SimulationRenderer simulationRenderer;
         private Interaction interaction;
+        private TestingStress testingStress;
 
         public Form1()
         {
@@ -31,12 +33,16 @@ namespace BridgeBuilder
 
             simulation = new Simulation(width, height);
             interaction = new Interaction(simulation);
-            simulationRenderer = new SimulationRenderer(simulation, interaction);
+            testingStress = new TestingStress(simulation);
+            simulationRenderer = new SimulationRenderer(simulation, interaction, testingStress);
             
 
             // databinding for faster and easier parameter tuning
             numericUpDown2.DataBindings.Add("Value", simulation, "Damping", true, DataSourceUpdateMode.OnPropertyChanged);
             numericUpDown1.DataBindings.Add("Value", simulation, "Stiffness", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
+            weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
 
             pauseToggle.Checked = simulation.Pause;
             gravitationToggle.Checked = simulation.Gravitation;
@@ -95,20 +101,27 @@ namespace BridgeBuilder
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            double last = 0;
             int precision = 1;
+            int maxCycles = 10;
+            float dt = 0.004f;
+            float dtSimulation = dt / precision;
             while (running)
             {
                 Simulation s = simulation;
-                double now = sw.Elapsed.TotalMilliseconds;
-                double dt = (now - last);
-                for (int i = 0; i < precision; i++)
+                double now = sw.Elapsed.TotalMilliseconds/1000f;
+                
+                int cycle = 0;
+                while(simulationTime < now && ++cycle < maxCycles)
                 {
-                    s.Update(0.001f/precision);
+                    for (int i = 0; i < precision; i++)
+                    {
+                        s.Update(dtSimulation);
+                        testingStress.Update(dtSimulation);
+                    }
+                    simulationTime += dt;
                 }
-                last = now;
-
-                Thread.Sleep(1);
+                // Debug.WriteLine(cycle);
+                Thread.Sleep(4);
             }
             sw.Stop();
         }
@@ -190,6 +203,11 @@ namespace BridgeBuilder
         private void button4_Click(object sender, EventArgs e)
         {
             simulation.Clear();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            testingStress.StartTest();
         }
     }
 }

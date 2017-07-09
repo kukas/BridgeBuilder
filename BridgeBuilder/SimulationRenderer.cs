@@ -11,17 +11,19 @@ namespace BridgeBuilder
     {
         private Interaction interaction;
         private Simulation simulation;
+        private TestingStress testingStress;
 
         private Pallete straincolor;
 
         public bool RenderStrain = false;
 
-        public SimulationRenderer(Simulation simulation, Interaction interaction)
+        public SimulationRenderer(Simulation simulation, Interaction interaction, TestingStress testingStress)
         {
             this.simulation = simulation;
             this.interaction = interaction;
+            this.testingStress = testingStress;
 
-            straincolor = new Pallete();
+        straincolor = new Pallete();
         }
 
         class Pallete {
@@ -91,7 +93,7 @@ namespace BridgeBuilder
                 Vertex u = e.U;
                 Vertex v = e.V;
                 Pen p = Pens.White;
-                if (!interaction.Connector.CanConnect(u.Position, v.Position))
+                if (!interaction.Connector.CanConnect(u.Position, v.Position) && simulation.Pause)
                     p = Pens.Red;
                 if (RenderStrain)
                 {
@@ -106,6 +108,12 @@ namespace BridgeBuilder
                 if (interaction.HoverEdges.Contains(e))
                     p = new Pen(Color.White, 2);
                 g.DrawLine(p, v.Position, u.Position);
+
+                if (e.IsRoad)
+                {
+                    PointF delta = new PointF(0, -3);
+                    g.DrawLine(p, v.Position.Add(delta), u.Position.Add(delta));
+                }
             }
 
             Vertex First = interaction.Connector.First;
@@ -136,6 +144,12 @@ namespace BridgeBuilder
                         g.DrawEllipse(dashedPen, x, y, s, s);
                     });
                 }
+            }
+
+            if (testingStress.Started)
+            {
+                Pen p = Pens.White;
+                g.DrawEllipse(p, testingStress.Position.X, testingStress.Position.Y, 10, 10);
             }
         }
 

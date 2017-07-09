@@ -20,11 +20,11 @@ namespace BridgeBuilder
 
         public decimal Damping { get; set; } = 0.01M;
         public decimal Stiffness { get; set; } = 1M;
-        public decimal GravitationStrength { get; set; } = 10000M;
-        public decimal DraggingStrength { get; set; } = 50000M;
-        public decimal DraggingDamping { get; set; } = 500M;
-        public decimal GroundStrength { get; set; } = 50000M;
-        public decimal GroundDamping { get; set; } = 50M;
+        public decimal GravitationStrength { get; set; } = 1000M;
+        public decimal DraggingStrength { get; set; } = 500M;
+        public decimal DraggingDamping { get; set; } = 50M;
+        public decimal GroundStrength { get; set; } = 5000M;
+        public decimal GroundDamping { get; set; } = 5M;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -39,6 +39,12 @@ namespace BridgeBuilder
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
             Edges = new ConcurrentBag<Edge>();
+
+            var v = AddVertex(100, 110);
+            //v.PrevPos.X -= 5;
+            v.Position.X += 0.016f;
+            AddVertex(200, 110);
+            AddVertex(150, 110);
 
             var board = new Vertex[1, 1];
             for (int x = 0; x < board.GetLength(0); x++)
@@ -96,9 +102,11 @@ namespace BridgeBuilder
             return vertex;
         }
 
-        public void AddEdge(Vertex vertex1, Vertex vertex2)
+        public Edge AddEdge(Vertex vertex1, Vertex vertex2)
         {
-            Edges.Add(new Edge(vertex1, vertex2));
+            Edge edge = new Edge(vertex1, vertex2);
+            Edges.Add(edge);
+            return edge;
         }
 
         internal void RemoveEdges(IEnumerable<Edge> edgesToRemove)

@@ -57,7 +57,7 @@ namespace BridgeBuilder
                         Vertex Second = interaction.Hover.FirstOrDefault(v => CanConnect(v.Position));
                         if (Second != null && Second != First)
                         {
-                            interaction.simulation.AddEdge(First,Second);
+                            interaction.AddEdge(First,Second);
                             First = Second;
                         }
                         else
@@ -80,7 +80,7 @@ namespace BridgeBuilder
 
                 if (Second != First && CanConnect(Second.Position))
                 {
-                    interaction.simulation.AddEdge(First, Second);
+                    interaction.AddEdge(First, Second);
                 }
                 First = Second;
             }
@@ -161,6 +161,12 @@ namespace BridgeBuilder
 
                 return First.Position.Add(cand);
             }
+        }
+
+        private void AddEdge(Vertex first, Vertex second)
+        {
+            Edge edge = simulation.AddEdge(first, second);
+            edge.IsRoad = Control.ModifierKeys == Keys.Shift;
         }
 
         private float RoundSnap(float x)

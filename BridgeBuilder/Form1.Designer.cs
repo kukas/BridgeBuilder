@@ -41,16 +41,23 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.pauseToggle = new System.Windows.Forms.CheckBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.weightUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.speedUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(13, 13);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(829, 446);
+            this.pictureBox1.Size = new System.Drawing.Size(1002, 446);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -59,7 +66,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(767, 505);
+            this.button1.Location = new System.Drawing.Point(940, 510);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -185,11 +192,75 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(586, 469);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 13;
+            this.button5.Text = "run test";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // weightUpDown
+            // 
+            this.weightUpDown.DecimalPlaces = 8;
+            this.weightUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.weightUpDown.Location = new System.Drawing.Point(747, 472);
+            this.weightUpDown.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.weightUpDown.Name = "weightUpDown";
+            this.weightUpDown.Size = new System.Drawing.Size(120, 20);
+            this.weightUpDown.TabIndex = 14;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(694, 474);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(38, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "weight";
+            // 
+            // speedUpDown
+            // 
+            this.speedUpDown.DecimalPlaces = 8;
+            this.speedUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.speedUpDown.Location = new System.Drawing.Point(747, 498);
+            this.speedUpDown.Name = "speedUpDown";
+            this.speedUpDown.Size = new System.Drawing.Size(120, 20);
+            this.speedUpDown.TabIndex = 16;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(694, 500);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 13);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "speed";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(854, 550);
+            this.ClientSize = new System.Drawing.Size(1027, 550);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.speedUpDown);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.weightUpDown);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.pauseToggle);
             this.Controls.Add(this.checkBox3);
@@ -209,6 +280,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -229,6 +302,11 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox pauseToggle;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.NumericUpDown weightUpDown;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown speedUpDown;
+        private System.Windows.Forms.Label label4;
     }
 }
 

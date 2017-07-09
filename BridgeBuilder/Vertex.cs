@@ -19,6 +19,7 @@ namespace BridgeBuilder
         public int ConstrainedCount = 0;
         public PointF Position;
         public PointF PrevPos;
+        public PointF Force;
 
         public bool Fixed = false;
         public float Radius = 10f;
@@ -40,9 +41,11 @@ namespace BridgeBuilder
 
         private PointF ComputeForces(float dt)
         {
-            PointF force = new PointF();
+            PointF force = Force;
+            Force = new PointF();
+
             if (simulation.Gravitation)
-                force.Y = (float)simulation.GravitationStrength;
+                force.Y += (float)simulation.GravitationStrength;
 
             PointF Velocity = Position.Sub(PrevPos).MultiplyScalar(1f / dt);
 
@@ -60,6 +63,12 @@ namespace BridgeBuilder
             }
             return force;
         }
+
+        internal void ApplyForce(PointF force)
+        {
+            Force = Force.Add(force);
+        }
+
         // https://en.wikipedia.org/wiki/Verlet_integration#Verlet_integration_.28without_velocities.29
         public void Update(float dt)
         {

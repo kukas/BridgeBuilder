@@ -10,16 +10,27 @@ namespace BridgeBuilder
     [Serializable]
     class Edge
     {
-        public Vertex V { get; }
         public Vertex U { get; }
+        public Vertex V { get; }
+        
         public float CurrentLength { get { return U.Position.Sub(V.Position).Mag(); } }
 
         public float Length;
 
-        public Edge(Vertex v, Vertex u)
+        public bool IsRoad = false;
+
+        public Edge(Vertex u, Vertex v)
         {
-            V = v;
+            if (v.Position.X < u.Position.X)
+            {
+                var w = v;
+                v = u;
+                u = w;
+            }
+
             U = u;
+            V = v;
+            
             ResetLength();
         }
 
