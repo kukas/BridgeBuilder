@@ -218,5 +218,12 @@ namespace BridgeBuilder
             if(!success)
                 MessageBox.Show("There are no roads on the scene. Testing cancelled.", "Bridge Testing problem", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
+
+        private void BridgeBuilder_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            running = false;
+            if (rendererThread != null)
+                rendererThread.Join();
+        }
     }
 }

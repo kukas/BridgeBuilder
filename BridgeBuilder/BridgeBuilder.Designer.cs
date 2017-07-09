@@ -282,7 +282,7 @@
             this.roadToggle.Text = "place road";
             this.roadToggle.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // BridgeBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -293,8 +293,9 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "Form1";
+            this.Name = "BridgeBuilder";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BridgeBuilder_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
