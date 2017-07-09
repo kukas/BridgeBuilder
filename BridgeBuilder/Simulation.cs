@@ -14,7 +14,9 @@ namespace BridgeBuilder
         public ConcurrentBag<Vertex> Vertices { get; private set; }
         public ConcurrentBag<Edge> Edges { get; private set; }
 
+        private ConcurrentBag<Vertex> newVertices;
         private ConcurrentBag<Edge> newEdges;
+        
 
         public decimal Damping { get; set; } = 0.01M;
         public decimal Stiffness { get; set; } = 1M;
@@ -70,6 +72,11 @@ namespace BridgeBuilder
                 Edges = newEdges;
                 newEdges = null;
             }
+            if (newVertices != null)
+            {
+                Vertices = newVertices;
+                newVertices = null;
+            }
             if (Pause) return;
             foreach (var v in Vertices) v.Update(dt);
             for (int i = 0; i < 10; i++)
@@ -98,6 +105,13 @@ namespace BridgeBuilder
         {
             List<Edge> EdgesList = Edges.ToList();
             newEdges = new ConcurrentBag<Edge>(EdgesList.Except(edgesToRemove));
+        }
+
+        internal void RemoveVertices(IEnumerable<Vertex> verticesToRemove)
+        {
+            List<Vertex> VerticesList = Vertices.ToList();
+            newVertices = new ConcurrentBag<Vertex>(VerticesList.Except(verticesToRemove));
+            RemoveEdges(Edges.Where(e => verticesToRemove.Contains(e.U) || verticesToRemove.Contains(e.V)));
         }
 
         internal IEnumerable<Edge> GetEdges(Vertex v)

@@ -16,7 +16,7 @@ namespace BridgeBuilder
 
         public VertexConnector Connector;
         public IEnumerable<Vertex> Hover { get; private set; } = Enumerable.Empty<Vertex>();
-        public IEnumerable<Edge> SelectedEdges { get; private set; } = Enumerable.Empty<Edge>();
+        public IEnumerable<Edge> HoverEdges { get; private set; } = Enumerable.Empty<Edge>();
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
         public bool SnapToGrid = false;
         public int GridSize = 10;
@@ -199,6 +199,10 @@ namespace BridgeBuilder
             {
                 foreach (var v in Hover) v.Fixed = !v.Fixed;
             }
+            if (e.KeyCode == Keys.D)
+            {
+                simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
+            }
         }
 
         internal void MouseDown(MouseEventArgs e)
@@ -242,8 +246,10 @@ namespace BridgeBuilder
             if (e.Button == MouseButtons.Right)
             {
                 // smaže vybrané hrany
-                if(SelectedEdges.Any())
-                    simulation.RemoveEdges(SelectedEdges);
+                if(HoverEdges.Any())
+                    simulation.RemoveEdges(HoverEdges);
+                if (Hover.Any())
+                    simulation.RemoveVertices(Hover);
                 // zruší výběr
                 Connector.Cancel();
             }
@@ -256,7 +262,7 @@ namespace BridgeBuilder
             StickyMousePosition = Snap(MousePosition);
 
             Hover = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
-            SelectedEdges = simulation.Edges.Where(edge => {
+            HoverEdges = simulation.Edges.Where(edge => {
                 // https://en.wikipedia.org/wiki/Vector_projection
                 PointF delta = edge.U.Position.Sub(edge.V.Position);
                 float length = delta.Mag();
