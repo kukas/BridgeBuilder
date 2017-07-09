@@ -7,23 +7,21 @@ using System.Threading.Tasks;
 
 namespace BridgeBuilder
 {
-    class SimulationRenderer
+    class SimulationRenderer : Renderer
     {
         private Interaction interaction;
         private Simulation simulation;
-        private TestingStress testingStress;
 
         private Pallete straincolor;
 
         public bool RenderStrain = false;
 
-        public SimulationRenderer(Simulation simulation, Interaction interaction, TestingStress testingStress)
+        public SimulationRenderer(Simulation simulation, Interaction interaction)
         {
             this.simulation = simulation;
             this.interaction = interaction;
-            this.testingStress = testingStress;
 
-        straincolor = new Pallete();
+            straincolor = new Pallete();
         }
 
         class Pallete {
@@ -61,7 +59,7 @@ namespace BridgeBuilder
             }
         }
 
-        public void Render(Graphics g)
+        public override void Render(Graphics g)
         {
             if (interaction.SnapToGrid)
             {
@@ -69,8 +67,8 @@ namespace BridgeBuilder
                 for (int x = 0; x < simulation.Width; x += interaction.GridSize)
                     for (int y = 0; y < simulation.Height; y += interaction.GridSize)
                         g.FillRectangle(b, x, y, 1, 1);
-
             }
+
             foreach (var v in simulation.Vertices)
             {
                 RenderVertex(v.Position, v.Radius, (x, y, s) =>
@@ -115,52 +113,6 @@ namespace BridgeBuilder
                     g.DrawLine(p, v.Position.Add(delta), u.Position.Add(delta));
                 }
             }
-
-            Vertex First = interaction.Connector.First;
-            if (First != null)
-            {
-                RenderVertex(First.Position, 14, (x, y, s) =>
-                {
-                    g.DrawEllipse(Pens.White, x, y, s, s);
-                });
-
-                // PointF deltaMouse = First.Position.Sub(interaction.Mous);
-                if (interaction.Connector.Selected)
-                {
-                    PointF candidate;
-                    if (interaction.Hover.Any())
-                    {
-                        candidate = interaction.Hover.First().Position;
-                    }
-                    else
-                    {
-                        candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
-                    }
-                    
-                    float[] dashValues = { 2, 4 };
-                    Pen dashedPen = new Pen(Color.White, 1);
-                    dashedPen.DashPattern = dashValues;
-                    if (interaction.Connector.CanConnect(candidate))
-                        g.DrawLine(dashedPen, candidate, First.Position);
-                    RenderVertex(candidate, 10, (x, y, s) =>
-                    {
-                        g.DrawEllipse(dashedPen, x, y, s, s);
-                    });
-                }
-            }
-
-            if (testingStress.Started)
-            {
-                Pen p = Pens.White;
-                g.DrawEllipse(p, testingStress.Position.X, testingStress.Position.Y, 10, 10);
-            }
-        }
-
-        private void RenderVertex(PointF position, float size, Action<float, float, float> render)
-        {
-            float ex = position.X - size / 2f;
-            float ey = position.Y - size / 2f;
-            render(ex, ey, size);
         }
     }
 }

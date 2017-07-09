@@ -19,9 +19,13 @@ namespace BridgeBuilder
         private Simulation simulation;
         private FpsMeter fps = new FpsMeter();
         private DoubleBuffer db;
-        private SimulationRenderer simulationRenderer;
+
         private Interaction interaction;
         private TestingStress testingStress;
+
+        private SimulationRenderer simulationRenderer;
+        private InteractionRenderer interactionRenderer;
+        private TestingStressRenderer testingStressRenderer;
 
         public Form1()
         {
@@ -34,10 +38,12 @@ namespace BridgeBuilder
             simulation = new Simulation(width, height);
             interaction = new Interaction(simulation);
             testingStress = new TestingStress(simulation);
-            simulationRenderer = new SimulationRenderer(simulation, interaction, testingStress);
+            simulationRenderer = new SimulationRenderer(simulation, interaction);
+            interactionRenderer = new InteractionRenderer(interaction);
+            testingStressRenderer = new TestingStressRenderer(testingStress);
 
-            // one-way databinding (hodnoty nezmění nic jiného než GUI)
-            speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
+        // one-way databinding (hodnoty nezmění nic jiného než GUI)
+        speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
 
             // two-way databinding
@@ -68,7 +74,9 @@ namespace BridgeBuilder
 
                 g.Clear(Color.Black);
                 simulationRenderer.Render(g);
-                
+                interactionRenderer.Render(g);
+                testingStressRenderer.Render(g);
+
                 // draw debugging FPS info
                 double currentFps = Math.Round(fps.FPS, 1);
                 g.FillRectangle(Brushes.Black, new Rectangle(0, 0, 150, 30));
