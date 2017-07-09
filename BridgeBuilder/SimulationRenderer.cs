@@ -48,7 +48,7 @@ namespace BridgeBuilder
             }
             double getB(double value)
             {
-                return linear(value, 0.75, 1.0) + (linear(value, 0, 57.0 / 200.0) - linear(value, 63.0 / 200.0, 120.0 / 200.0)) * 0.5;
+                return linear(value, 0.75, 1.0) + (linear(value, -0.2, 57.0 / 200.0) - linear(value, 63.0 / 200.0, 120.0 / 200.0)) * 0.5;
             }
 
             public Color GetColor(double v)
