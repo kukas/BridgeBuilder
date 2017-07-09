@@ -29,8 +29,8 @@ namespace BridgeBuilder
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public bool Pause = true;
-        public bool Gravitation = true;
+        public bool Pause { get; set; } = true;
+        public bool Gravitation { get; set; } = true;
         public float MaxStrain = 0.01f;
 
         public Simulation(int width, int height)

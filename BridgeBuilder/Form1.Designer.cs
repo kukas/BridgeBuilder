@@ -88,7 +88,6 @@
             this.gravitationToggle.TabIndex = 2;
             this.gravitationToggle.Text = "gravitation";
             this.gravitationToggle.UseVisualStyleBackColor = true;
-            this.gravitationToggle.CheckedChanged += new System.EventHandler(this.gravitationToggle_CheckedChanged);
             // 
             // stressToggle
             // 
@@ -99,7 +98,6 @@
             this.stressToggle.TabIndex = 7;
             this.stressToggle.Text = "show stress";
             this.stressToggle.UseVisualStyleBackColor = true;
-            this.stressToggle.CheckedChanged += new System.EventHandler(this.stressToggle_CheckedChanged);
             // 
             // saveButton
             // 
@@ -130,7 +128,6 @@
             this.snapToggle.TabIndex = 10;
             this.snapToggle.Text = "align to grid";
             this.snapToggle.UseVisualStyleBackColor = true;
-            this.snapToggle.CheckedChanged += new System.EventHandler(this.snapToggle_CheckedChanged);
             // 
             // pauseToggle
             // 
@@ -141,7 +138,6 @@
             this.pauseToggle.TabIndex = 11;
             this.pauseToggle.Text = "pause simulation";
             this.pauseToggle.UseVisualStyleBackColor = true;
-            this.pauseToggle.CheckedChanged += new System.EventHandler(this.pauseToggle_CheckedChanged);
             // 
             // clearButton
             // 

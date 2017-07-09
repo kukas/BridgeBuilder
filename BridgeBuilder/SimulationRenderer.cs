@@ -14,7 +14,7 @@ namespace BridgeBuilder
 
         private Pallete straincolor;
 
-        public bool RenderStrain = false;
+        public bool RenderStrain { get; set; } = false;
 
         public SimulationRenderer(Simulation simulation, Interaction interaction)
         {

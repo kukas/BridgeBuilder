@@ -46,15 +46,15 @@ namespace BridgeBuilder
             speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
 
+            pauseToggle.DataBindings.Add("Checked", simulation, "Pause", true, DataSourceUpdateMode.OnPropertyChanged);
+            gravitationToggle.DataBindings.Add("Checked", simulation, "Gravitation", true, DataSourceUpdateMode.OnPropertyChanged);
+            stressToggle.DataBindings.Add("Checked", simulationRenderer, "RenderStrain", true, DataSourceUpdateMode.OnPropertyChanged);
+            snapToggle.DataBindings.Add("Checked", interaction, "SnapToGrid", true, DataSourceUpdateMode.OnPropertyChanged);
+
             // two-way databinding
             roadToggle.DataBindings.Add("Checked", interaction, "PlacingRoads", true, DataSourceUpdateMode.OnPropertyChanged);
             fixingToggle.DataBindings.Add("Checked", interaction, "FixingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
             addVerticesToggle.DataBindings.Add("Checked", interaction, "AddingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
-
-            pauseToggle.Checked = simulation.Pause;
-            gravitationToggle.Checked = simulation.Gravitation;
-            stressToggle.Checked = simulationRenderer.RenderStrain;
-            snapToggle.Checked = interaction.SnapToGrid;
 
             db = new DoubleBuffer(width, height);
 
@@ -172,26 +172,7 @@ namespace BridgeBuilder
 
             Close();
         }
-        // simulation checkboxes
-        private void gravitationToggle_CheckedChanged(object sender, EventArgs e)
-        {
-            simulation.Gravitation = ((CheckBox)sender).Checked;
-        }
 
-        private void stressToggle_CheckedChanged(object sender, EventArgs e)
-        {
-            simulationRenderer.RenderStrain = ((CheckBox)sender).Checked;
-        }
-
-        private void snapToggle_CheckedChanged(object sender, EventArgs e)
-        {
-            interaction.SnapToGrid = ((CheckBox)sender).Checked;
-        }
-
-        private void pauseToggle_CheckedChanged(object sender, EventArgs e)
-        {
-            simulation.Pause = ((CheckBox)sender).Checked;
-        }
         // scene actions
         private void saveButton_Click(object sender, EventArgs e)
         {
@@ -218,7 +199,7 @@ namespace BridgeBuilder
             }
             catch (IOException ex)
             {
-                MessageBox.Show("Bridge file not found", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(ex.Message, "Bridge file error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
