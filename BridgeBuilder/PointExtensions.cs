@@ -35,5 +35,9 @@ namespace BridgeBuilder
             point.Y *= s;
             return point;
         }
+        public static float Dot(this PointF point, PointF v)
+        {
+            return point.X*v.X + point.Y*v.Y;
+        }
     }
 }

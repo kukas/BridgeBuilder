@@ -16,6 +16,7 @@ namespace BridgeBuilder
 
         public VertexConnector Connector;
         public IEnumerable<Vertex> Selected { get; private set; } = Enumerable.Empty<Vertex>();
+        public IEnumerable<Edge> SelectedEdges { get; private set; } = Enumerable.Empty<Edge>();
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
         public bool SnapToGrid = false;
         public int GridSize = 10;
@@ -91,6 +92,7 @@ namespace BridgeBuilder
             if (e.Button == MouseButtons.Left)
             {
                 Dragging = Selected.ToList(); // copy selected
+                simulation.RemoveEdges(SelectedEdges);
             }
         }
 
@@ -106,6 +108,19 @@ namespace BridgeBuilder
             mouse = e;
             var MousePosition = new PointF(e.X, e.Y);
             Selected = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
+            SelectedEdges = simulation.Edges.Where(edge => {
+                // https://en.wikipedia.org/wiki/Vector_projection
+                PointF delta = edge.U.Position.Sub(edge.V.Position);
+                float length = delta.Mag();
+                PointF unit = delta.MultiplyScalar(1f/length);
+                PointF deltaMouse = MousePosition.Sub(edge.V.Position);
+                float scalarProjection = unit.Dot(deltaMouse);
+                PointF a1 = unit.MultiplyScalar(scalarProjection);
+                PointF a2 = deltaMouse.Sub(a1);
+                float mouseDistance = a2.Mag();
+                float maxDistance = Math.Max(edge.U.Radius, edge.V.Radius);
+                return scalarProjection > edge.U.Radius && scalarProjection < length - edge.V.Radius && mouseDistance < maxDistance;
+            });
 
             foreach (var v in Dragging)
             {

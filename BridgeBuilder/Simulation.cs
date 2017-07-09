@@ -14,6 +14,8 @@ namespace BridgeBuilder
         public ConcurrentBag<Vertex> Vertices { get; private set; }
         public ConcurrentBag<Edge> Edges { get; private set; }
 
+        private ConcurrentBag<Edge> newEdges;
+
         public decimal Damping { get; set; } = 0.01M;
         public decimal Stiffness { get; set; } = 1M;
         public decimal GravitationStrength { get; set; } = 10000M;
@@ -63,6 +65,11 @@ namespace BridgeBuilder
 
         public void Update(float dt)
         {
+            if (newEdges != null)
+            {
+                Edges = newEdges;
+                newEdges = null;
+            }
             if (Pause) return;
             foreach (var v in Vertices) v.Update(dt);
             for (int i = 0; i < 5; i++)
@@ -73,14 +80,25 @@ namespace BridgeBuilder
             }
         }
 
+        public void AddVertex(float x, float y)
+        {
+            Vertices.Add(new Vertex(this, x, y));
+        }
+
         public void AddEdge(Vertex vertex1, Vertex vertex2)
         {
             Edges.Add(new Edge(vertex1, vertex2));
         }
 
-        public void AddVertex(float x, float y)
+        internal void RemoveEdges(IEnumerable<Edge> edgesToRemove)
         {
-            Vertices.Add(new Vertex(this, x, y));
+            List<Edge> EdgesList = Edges.ToList();
+            newEdges = new ConcurrentBag<Edge>(EdgesList.Except(edgesToRemove));
+        }
+
+        internal IEnumerable<Edge> GetEdges(Vertex v)
+        {
+            return Edges.Where(edge => edge.U == v || edge.V == v);
         }
 
         internal void LoadSimulation(Simulation loadedSimulation)
@@ -88,11 +106,6 @@ namespace BridgeBuilder
             Vertices = loadedSimulation.Vertices;
             Edges = loadedSimulation.Edges;
             foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
-        }
-
-        internal IEnumerable<Edge> GetEdges(Vertex v)
-        {
-            return Edges.Where(edge => edge.U == v || edge.V == v);
         }
     }
 }

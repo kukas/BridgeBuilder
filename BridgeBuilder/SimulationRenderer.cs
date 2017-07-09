@@ -101,6 +101,8 @@ namespace BridgeBuilder
                     var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
                     g.DrawString(String.Format("{0:0.0}", delta), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
                 }
+                if (interaction.SelectedEdges.Contains(e))
+                    p = new Pen(Color.White, 2);
                 g.DrawLine(p, v.Position, u.Position);
             }
 
