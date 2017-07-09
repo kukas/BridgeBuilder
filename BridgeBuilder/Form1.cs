@@ -48,6 +48,7 @@ namespace BridgeBuilder
             pauseToggle.Checked = simulation.Pause;
             gravitationToggle.Checked = simulation.Gravitation;
             stressToggle.Checked = simulationRenderer.RenderStrain;
+            snapToggle.Checked = interaction.SnapToGrid;
 
             db = new DoubleBuffer(width, height);
 
@@ -197,13 +198,20 @@ namespace BridgeBuilder
         private void loadButton_Click(object sender, EventArgs e)
         {
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("bridge.bin",
+            try
+            {
+                Stream stream = new FileStream("bridge.bin",
                                       FileMode.Open,
                                       FileAccess.Read,
                                       FileShare.Read);
-            Simulation loadedSimulation = (Simulation)formatter.Deserialize(stream);
-            simulation.LoadSimulation(loadedSimulation);
-            stream.Close();
+                Simulation loadedSimulation = (Simulation)formatter.Deserialize(stream);
+                simulation.LoadSimulation(loadedSimulation);
+                stream.Close();
+            }
+            catch(IOException ex)
+            {
+                MessageBox.Show("Bridge file not found", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         private void clearButton_Click(object sender, EventArgs e)

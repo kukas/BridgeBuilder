@@ -19,7 +19,7 @@ namespace BridgeBuilder
         public IEnumerable<Vertex> Hover { get; private set; } = Enumerable.Empty<Vertex>();
         public IEnumerable<Edge> HoverEdges { get; private set; } = Enumerable.Empty<Edge>();
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
-        public bool SnapToGrid = false;
+        public bool SnapToGrid = true;
         public int GridSize = 10;
         public PointF StickyMousePosition = new PointF();
         public PointF MousePosition = new PointF();
