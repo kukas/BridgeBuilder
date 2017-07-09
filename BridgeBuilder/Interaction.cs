@@ -15,7 +15,7 @@ namespace BridgeBuilder
         private MouseEventArgs mouse;
 
         public VertexConnector Connector;
-        public IEnumerable<Vertex> Selected { get; private set; } = Enumerable.Empty<Vertex>();
+        public IEnumerable<Vertex> Hover { get; private set; } = Enumerable.Empty<Vertex>();
         public IEnumerable<Edge> SelectedEdges { get; private set; } = Enumerable.Empty<Edge>();
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
         public bool SnapToGrid = false;
@@ -33,7 +33,10 @@ namespace BridgeBuilder
         {
             public Vertex First;
             private Interaction interaction;
-            public float MaxDistance = 59;
+            public float MaxBoxDistance = 80;
+            public float MaxDiagDistance = 120;
+
+            public bool Selected { get { return First != null; } }
 
             public VertexConnector(Interaction interaction)
             {
@@ -42,16 +45,16 @@ namespace BridgeBuilder
 
             public void Connect()
             {
-                if (interaction.Selected.Any())
+                if (interaction.Hover.Any())
                 {
                     // nevybraný žádný vertex
                     if (First == null)
                     {
-                        First = interaction.Selected.First();
+                        First = interaction.Hover.First();
                     }
                     else // je vybraný první vertex, vybíráme druhý
                     {
-                        Vertex Second = interaction.Selected.FirstOrDefault(v => CanConnect(v.Position));
+                        Vertex Second = interaction.Hover.FirstOrDefault(v => CanConnect(v.Position));
                         if (Second != null && Second != First)
                         {
                             interaction.simulation.AddEdge(First,Second);
@@ -59,7 +62,7 @@ namespace BridgeBuilder
                         }
                         else
                         {
-                            First = interaction.Selected.FirstOrDefault();
+                            First = interaction.Hover.FirstOrDefault();
                         }
                     }
                 }
@@ -75,32 +78,126 @@ namespace BridgeBuilder
                 if (First == null)
                     return;
 
-                if (Second != First)
+                if (Second != First && CanConnect(Second.Position))
                 {
                     interaction.simulation.AddEdge(First, Second);
                 }
                 First = Second;
             }
 
-            public bool CanConnect(PointF point)
-            {
-                if (First == null)
-                    return false;
-                PointF delta = First.Position.Sub(point);
-                return delta.MagSq() <= MaxDistance * MaxDistance;
-            }
-
             public void Cancel()
             {
                 First = null;
             }
+
+            public bool CanConnect(PointF point)
+            {
+                if (First == null)
+                    return false;
+                return CanConnect(First.Position, point);
+            }
+
+            public bool CanConnect(PointF p1, PointF p2)
+            {
+                PointF delta = p1.Sub(p2);
+                delta.X = Math.Abs(delta.X);
+                delta.Y = Math.Abs(delta.Y);
+                float manhattanDist = delta.X + delta.Y;
+                return manhattanDist <= MaxDiagDistance && delta.X <= MaxBoxDistance && delta.Y <= MaxBoxDistance;
+            }
+
+            public PointF GetCandidate(PointF point)
+            {
+                if (!Selected) return point;
+                PointF delta = point.Sub(First.Position);
+                PointF cand = delta;
+
+                float mbd = MaxBoxDistance;
+                float mdd = MaxDiagDistance;
+
+                if (interaction.SnapToGrid)
+                {
+                    mbd += interaction.GridSize/2-1;
+                    mdd += interaction.GridSize/2-1;
+                }
+                else
+                {
+                    mbd -= 0.1f;
+                    mdd -= 0.1f;
+                }
+
+                // Kosočtverec
+                float t = 1;
+                if (cand.X + cand.Y > mdd && cand.X > 0 && cand.Y > 0)
+                    t = mdd / (delta.Y + delta.X);
+                if (-cand.X - cand.Y > mdd && cand.X < 0 && cand.Y < 0)
+                    t = -mdd / (delta.Y + delta.X);
+                if (-cand.X + cand.Y > mdd && cand.X < 0 && cand.Y > 0)
+                    t = mdd / (delta.Y - delta.X);
+                if (cand.X - cand.Y > mdd && cand.X > 0 && cand.Y < 0)
+                    t = -mdd / (delta.Y - delta.X);
+                cand.X *= t;
+                cand.Y *= t;
+
+                // Čtverec
+                if (Math.Abs(cand.X) > mbd)
+                    cand = new PointF(Math.Sign(cand.X)* mbd, Utils.Clamp(mbd / Math.Abs(cand.X) * cand.Y, -mbd, mbd));
+                if (Math.Abs(cand.Y) > mbd)
+                    cand = new PointF(Utils.Clamp(mbd / Math.Abs(cand.Y) * cand.X, -mbd, mbd), Math.Sign(cand.Y) * mbd);
+
+                if (interaction.SnapToGrid)
+                {
+                    
+                    // přichytávání k mřížce
+                    float fractX = First.Position.X - interaction.FloorSnap(First.Position.X);
+                    float fractY = First.Position.Y - interaction.FloorSnap(First.Position.Y);
+                    cand.X = interaction.TruncateSnap(cand.X + fractX)-fractX;
+                    cand.Y = interaction.TruncateSnap(cand.Y + fractY)-fractY;
+                    
+                    // versus přichytávání relativně k označenému bodu
+                    // cand.X = interaction.TruncateSnap(cand.X);
+                    // cand.Y = interaction.TruncateSnap(cand.Y);
+                }
+
+                return First.Position.Add(cand);
+            }
+        }
+
+        private float RoundSnap(float x)
+        {
+            return (float)Math.Round(x / GridSize) * GridSize;
+        }
+
+        private float FloorSnap(float x)
+        {
+            return (float)Math.Floor(x / GridSize) * GridSize;
+        }
+
+        private float CeilSnap(float x)
+        {
+            return (float)Math.Ceiling(x / GridSize) * GridSize;
+        }
+
+
+        private float TruncateSnap(float x)
+        {
+            return (float)Math.Truncate(x / GridSize) * GridSize;
+        }
+
+        private PointF Snap(PointF position)
+        {
+            if (!SnapToGrid)
+                return position;
+            float x = RoundSnap(position.X);
+            float y = RoundSnap(position.Y);
+            return new PointF(x, y);
         }
 
         internal void KeyPress(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F)
             {
-                foreach (var v in Selected) v.Fixed = !v.Fixed;
+                foreach (var v in Hover) v.Fixed = !v.Fixed;
             }
         }
 
@@ -108,45 +205,57 @@ namespace BridgeBuilder
         {
             mouse = e;
 
+            // LEVÉ TLAČÍTKO
             if (e.Button == MouseButtons.Left)
             {
-                Dragging = Selected.ToList(); // copy selected
+                // levé tlačítko myši přesouvá body
+                Dragging = Hover.ToList(); // copy selected
 
-                if(Connector.CanConnect(StickyMousePosition) && !Selected.Any())
+                // také vytváří nové spoje
+                if(Connector.Selected && !Hover.Any()) // pokud máme označený bod a nad žádným dalším bodem nedržíme myš
                 {
-                    Debug.WriteLine("can connect");
-                    Vertex vertex = simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
-                    Connector.Connect(vertex);
+                    // získáme vhodnou pozici pro nový bod (nejblíže k myši od označeného bodu)
+                    PointF candidatePosition = Connector.GetCandidate(MousePosition);
+                    // PointF candidatePosition = StickyMousePosition;
+                    // pokud existuje nějaký bod poblíž vhodné pozice
+                    var nearCandidate = simulation.Vertices.Where(v => { return candidatePosition.Sub(v.Position).Mag() < v.Radius; });
+                    if (nearCandidate.Any())
+                    {
+                        // tak spojíme tento blízký bod a označený bod
+                        Connector.Connect(nearCandidate.First());
+                    }
+                    else
+                    {
+                        // jinak vytvoříme bod nový
+                        Vertex vertex = simulation.AddVertex(candidatePosition.X, candidatePosition.Y);
+                        Connector.Connect(vertex);
+                    }
+                    
                 }
-                else
+                else // pokud nemáme označený bod nebo držíme nad nějakým myš
                 {
+                    // zkusíme označit
                     Connector.Connect();
                 }
             }
+            // PRAVÉ TLAČÍTKO
             if (e.Button == MouseButtons.Right)
             {
-                simulation.RemoveEdges(SelectedEdges);
+                // smaže vybrané hrany
+                if(SelectedEdges.Any())
+                    simulation.RemoveEdges(SelectedEdges);
+                // zruší výběr
                 Connector.Cancel();
             }
-        }
-
-        private PointF Snap(PointF position)
-        {
-            float x = (float)Math.Round((double)position.X / GridSize) * GridSize;
-            float y = (float)Math.Round((double)position.Y / GridSize) * GridSize;
-            return new PointF(x, y);
         }
 
         internal void MouseMove(MouseEventArgs e)
         {
             mouse = e;
             MousePosition = new PointF(e.X, e.Y);
-            if (SnapToGrid)
-                StickyMousePosition = Snap(MousePosition);
-            else
-                StickyMousePosition = MousePosition;
+            StickyMousePosition = Snap(MousePosition);
 
-            Selected = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
+            Hover = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
             SelectedEdges = simulation.Edges.Where(edge => {
                 // https://en.wikipedia.org/wiki/Vector_projection
                 PointF delta = edge.U.Position.Sub(edge.V.Position);

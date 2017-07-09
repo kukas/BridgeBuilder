@@ -29,10 +29,20 @@ namespace BridgeBuilder
         {
             return (float)Math.Sqrt(point.MagSq());
         }
+        public static PointF Normalize(this PointF point)
+        {
+            return point.DivideScalar(point.Mag());
+        }
         public static PointF MultiplyScalar(this PointF point, float s)
         {
             point.X *= s;
             point.Y *= s;
+            return point;
+        }
+        public static PointF DivideScalar(this PointF point, float s)
+        {
+            point.X /= s;
+            point.Y /= s;
             return point;
         }
         public static float Dot(this PointF point, PointF v)

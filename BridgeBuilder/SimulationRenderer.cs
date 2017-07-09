@@ -71,16 +71,16 @@ namespace BridgeBuilder
             }
             foreach (var v in simulation.Vertices)
             {
-                RenderVertex(v, v.Radius, (x, y, s) =>
+                RenderVertex(v.Position, v.Radius, (x, y, s) =>
                 {
-                    if (interaction.Selected.Contains(v))
+                    if (interaction.Hover.Contains(v))
                         g.FillEllipse(Brushes.White, x, y, s, s);
                     else
                         g.DrawEllipse(Pens.White, x, y, s, s);
                 });
                 if (v.Fixed)
                 {
-                    RenderVertex(v, 14, (x, y, s) =>
+                    RenderVertex(v.Position, 14, (x, y, s) =>
                     {
                         g.DrawRectangle(Pens.White, x, y, s, s);
                     });
@@ -91,6 +91,8 @@ namespace BridgeBuilder
                 Vertex u = e.U;
                 Vertex v = e.V;
                 Pen p = Pens.White;
+                if (!interaction.Connector.CanConnect(u.Position, v.Position))
+                    p = Pens.Red;
                 if (RenderStrain)
                 {
                     float maxStrain = simulation.MaxStrain;
@@ -109,26 +111,38 @@ namespace BridgeBuilder
             Vertex First = interaction.Connector.First;
             if (First != null)
             {
-                RenderVertex(First, 14, (x, y, s) =>
+                RenderVertex(First.Position, 14, (x, y, s) =>
                 {
                     g.DrawEllipse(Pens.White, x, y, s, s);
                 });
 
                 // PointF deltaMouse = First.Position.Sub(interaction.Mous);
-                if (interaction.Connector.CanConnect(interaction.StickyMousePosition))
+                if (interaction.Connector.Selected)
                 {
-                    float[] dashValues = { 1, 1 };
-                    Pen blackPen = new Pen(Color.White, 2);
-                    blackPen.DashPattern = dashValues;
-                    g.DrawLine(blackPen, interaction.StickyMousePosition, First.Position);
+                    PointF candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
+                    // PointF candidate = interaction.StickyMousePosition;
+                    
+                    float[] dashValues = { 2, 4 };
+                    Pen dashedPen = new Pen(Color.White, 1);
+                    dashedPen.DashPattern = dashValues;
+                    if (interaction.Connector.CanConnect(candidate))
+                        g.DrawLine(dashedPen, candidate, First.Position);
+                    RenderVertex(candidate, 10, (x, y, s) =>
+                    {
+                        g.DrawEllipse(dashedPen, x, y, s, s);
+                    });
+                    RenderVertex(interaction.MousePosition, 10, (x, y, s) =>
+                    {
+                        g.DrawEllipse(dashedPen, x, y, s, s);
+                    });
                 }
             }
         }
 
-        private void RenderVertex(Vertex v, float size, Action<float, float, float> render)
+        private void RenderVertex(PointF position, float size, Action<float, float, float> render)
         {
-            float ex = v.Position.X - size / 2f;
-            float ey = v.Position.Y - size / 2f;
+            float ex = position.X - size / 2f;
+            float ey = position.Y - size / 2f;
             render(ex, ey, size);
         }
     }
