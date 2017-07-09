@@ -31,7 +31,9 @@ namespace BridgeBuilder
 
         public bool Pause { get; set; } = true;
         public bool Gravitation { get; set; } = true;
+
         public float MaxStrain = 0.01f;
+        private int RelaxationSteps = 10;
 
         public Simulation(int width, int height)
         {
@@ -39,36 +41,6 @@ namespace BridgeBuilder
             this.Height = height;
             Vertices = new ConcurrentBag<Vertex>();
             Edges = new ConcurrentBag<Edge>();
-
-            var v = AddVertex(100, 110);
-            //v.PrevPos.X -= 5;
-            v.Position.X += 0.016f;
-            AddVertex(200, 110);
-            AddVertex(150, 110);
-
-            var board = new Vertex[1, 1];
-            for (int x = 0; x < board.GetLength(0); x++)
-            {
-                for (int y = 0; y < board.GetLength(1); y++)
-                {
-                    board[x, y] = new Vertex(this, x * 20 + 100, y * 20 + 100);
-                    Vertices.Add(board[x, y]);
-                }
-            }
-            for (int x = 0; x < board.GetLength(0); x++)
-            {
-                for (int y = 0; y < board.GetLength(1); y++)
-                {
-                    for (int dx = Math.Max(x - 1, 0); dx <= Math.Min(x + 1, board.GetLength(0) - 1); dx++)
-                    {
-                        for (int dy = Math.Max(y - 1, 0); dy <= Math.Min(y + 1, board.GetLength(1) - 1); dy++)
-                        {
-                            if (dx > x || dy > y)
-                                AddEdge(board[x, y], board[dx, dy]);
-                        }
-                    }
-                }
-            }
         }
 
         public void Update(float dt)
@@ -85,15 +57,22 @@ namespace BridgeBuilder
             }
             if (Pause) return;
             foreach (var v in Vertices) v.Update(dt);
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < RelaxationSteps; i++)
             {
                 foreach (var v in Vertices) v.ResetConstrains();
                 foreach (var e in Edges) e.Relax();
                 foreach (var v in Vertices) v.ApplyConstrains();
             }
+
             var tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
             if (tooStrained.Any())
                 RemoveEdges(tooStrained);
+
+            // tolerance v Y ose - kvůli kolizím se zemí (míček se při kolizi občas na chvíli protuneluje mimo obraz)
+            float d = 50;
+            var tooFar = Vertices.Where(v => v.Position.X < 0 || v.Position.X > Width || v.Position.Y < -d || v.Position.Y > Height+d);
+            if (tooFar.Any())
+                RemoveVertices(tooFar);
         }
 
         public Vertex AddVertex(float x, float y)
