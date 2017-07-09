@@ -135,11 +135,15 @@ namespace BridgeBuilder
 
             public bool CanConnect(PointF p1, PointF p2)
             {
+                // rezerva, když se vrcholy maličko pohnou
+                float mbd = MaxBoxDistance+2;
+                float mdd = MaxDiagDistance+2;
+
                 PointF delta = p1.Sub(p2);
                 delta.X = Math.Abs(delta.X);
                 delta.Y = Math.Abs(delta.Y);
                 float manhattanDist = delta.X + delta.Y;
-                return manhattanDist <= MaxDiagDistance && delta.X <= MaxBoxDistance && delta.Y <= MaxBoxDistance;
+                return manhattanDist <= mdd && delta.X <= mbd && delta.Y <= mbd;
             }
 
             public PointF GetCandidate(PointF point)
