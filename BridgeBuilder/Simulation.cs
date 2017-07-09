@@ -92,7 +92,8 @@ namespace BridgeBuilder
                 foreach (var v in Vertices) v.ApplyConstrains();
             }
             var tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
-            RemoveEdges(tooStrained);
+            if(tooStrained.Any())
+                RemoveEdges(tooStrained);
         }
 
         public Vertex AddVertex(float x, float y)

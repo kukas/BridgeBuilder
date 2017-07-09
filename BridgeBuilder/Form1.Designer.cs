@@ -211,11 +211,6 @@
             0,
             196608});
             this.weightUpDown.Location = new System.Drawing.Point(747, 472);
-            this.weightUpDown.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
             this.weightUpDown.Name = "weightUpDown";
             this.weightUpDown.Size = new System.Drawing.Size(120, 20);
             this.weightUpDown.TabIndex = 14;

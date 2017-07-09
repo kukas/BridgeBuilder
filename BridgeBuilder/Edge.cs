@@ -75,5 +75,10 @@ namespace BridgeBuilder
         {
             Length = CurrentLength;
         }
+
+        public override string ToString()
+        {
+            return $"U: {U} V: {V} CurrentLength: {CurrentLength} Length: {Length}";
+        }
     }
 }
