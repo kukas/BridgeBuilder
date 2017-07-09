@@ -51,6 +51,10 @@ namespace BridgeBuilder
             stressToggle.DataBindings.Add("Checked", simulationRenderer, "RenderStrain", true, DataSourceUpdateMode.OnPropertyChanged);
             snapToggle.DataBindings.Add("Checked", interaction, "SnapToGrid", true, DataSourceUpdateMode.OnPropertyChanged);
 
+            Binding bind = new Binding("Enabled", simulation, "Pause");
+            bind.Format += (sender, e) => { e.Value = !((bool)e.Value); };
+            testButton.DataBindings.Add(bind);
+
             // two-way databinding
             roadToggle.DataBindings.Add("Checked", interaction, "PlacingRoads", true, DataSourceUpdateMode.OnPropertyChanged);
             fixingToggle.DataBindings.Add("Checked", interaction, "FixingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
