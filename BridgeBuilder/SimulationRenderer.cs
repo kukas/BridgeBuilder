@@ -102,8 +102,9 @@ namespace BridgeBuilder
                     var strain = Math.Min(Math.Abs(delta), maxStrain);
                     p = new Pen(straincolor.GetColor(strain / maxStrain), 2);
 
-                    var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
-                    g.DrawString(String.Format("{0:0.00}", strain / maxStrain), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
+                    // Show strain as text
+                    // var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
+                    // g.DrawString(String.Format("{0:0.00}", strain / maxStrain), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
                 }
                 if (interaction.HoverEdges.Contains(e))
                     p = new Pen(Color.White, 2);
@@ -127,8 +128,15 @@ namespace BridgeBuilder
                 // PointF deltaMouse = First.Position.Sub(interaction.Mous);
                 if (interaction.Connector.Selected)
                 {
-                    PointF candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
-                    // PointF candidate = interaction.StickyMousePosition;
+                    PointF candidate;
+                    if (interaction.Hover.Any())
+                    {
+                        candidate = interaction.Hover.First().Position;
+                    }
+                    else
+                    {
+                        candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
+                    }
                     
                     float[] dashValues = { 2, 4 };
                     Pen dashedPen = new Pen(Color.White, 1);
@@ -136,10 +144,6 @@ namespace BridgeBuilder
                     if (interaction.Connector.CanConnect(candidate))
                         g.DrawLine(dashedPen, candidate, First.Position);
                     RenderVertex(candidate, 10, (x, y, s) =>
-                    {
-                        g.DrawEllipse(dashedPen, x, y, s, s);
-                    });
-                    RenderVertex(interaction.MousePosition, 10, (x, y, s) =>
                     {
                         g.DrawEllipse(dashedPen, x, y, s, s);
                     });

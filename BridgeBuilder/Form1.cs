@@ -35,14 +35,11 @@ namespace BridgeBuilder
             interaction = new Interaction(simulation);
             testingStress = new TestingStress(simulation);
             simulationRenderer = new SimulationRenderer(simulation, interaction, testingStress);
-            
-
-            // databinding for faster and easier parameter tuning
-            numericUpDown2.DataBindings.Add("Value", simulation, "Damping", true, DataSourceUpdateMode.OnPropertyChanged);
-            numericUpDown1.DataBindings.Add("Value", simulation, "Stiffness", true, DataSourceUpdateMode.OnPropertyChanged);
 
             speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            roadToggle.DataBindings.Add("Checked", interaction, "PlacingRoads", true, DataSourceUpdateMode.OnPropertyChanged);
 
             pauseToggle.Checked = simulation.Pause;
             gravitationToggle.Checked = simulation.Gravitation;
@@ -143,13 +140,18 @@ namespace BridgeBuilder
         }
 
         // keyboard events
-        private void Form1_KeyPress(object sender, KeyEventArgs e)
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            interaction.KeyPress(e);
+            interaction.KeyUp(e);
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            interaction.KeyDown(e);
         }
 
         // GUI interaction events
-        private void button1_Click(object sender, EventArgs e)
+        private void exitButton_Click(object sender, EventArgs e)
         {
             running = false;
             if(rendererThread != null)
@@ -157,40 +159,18 @@ namespace BridgeBuilder
 
             Close();
         }
-
+        // simulation checkboxes
         private void gravitationToggle_CheckedChanged(object sender, EventArgs e)
         {
-            simulation.Gravitation = gravitationToggle.Checked;
+            simulation.Gravitation = ((CheckBox)sender).Checked;
         }
 
         private void stressToggle_CheckedChanged(object sender, EventArgs e)
         {
-            simulationRenderer.RenderStrain = stressToggle.Checked;
+            simulationRenderer.RenderStrain = ((CheckBox)sender).Checked;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("MyFile.bin",
-                                     FileMode.Create,
-                                     FileAccess.Write, FileShare.None);
-            formatter.Serialize(stream, simulation);
-            stream.Close();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("MyFile.bin",
-                                      FileMode.Open,
-                                      FileAccess.Read,
-                                      FileShare.Read);
-            Simulation loadedSimulation = (Simulation)formatter.Deserialize(stream);
-            simulation.LoadSimulation(loadedSimulation);
-            stream.Close();
-        }
-
-        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        private void snapToggle_CheckedChanged(object sender, EventArgs e)
         {
             interaction.SnapToGrid = ((CheckBox)sender).Checked;
         }
@@ -199,15 +179,43 @@ namespace BridgeBuilder
         {
             simulation.Pause = ((CheckBox)sender).Checked;
         }
+        // scene actions
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("bridge.bin",
+                                     FileMode.Create,
+                                     FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, simulation);
+            stream.Close();
+        }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("bridge.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Simulation loadedSimulation = (Simulation)formatter.Deserialize(stream);
+            simulation.LoadSimulation(loadedSimulation);
+            stream.Close();
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
         {
             simulation.Clear();
         }
-
-        private void button5_Click(object sender, EventArgs e)
+        // bridge testing
+        private void testButton_Click(object sender, EventArgs e)
         {
-            testingStress.StartTest();
+            if(!simulation.Pause)
+                testingStress.StartTest();
+        }
+        // interaction
+        private void roadToggle_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

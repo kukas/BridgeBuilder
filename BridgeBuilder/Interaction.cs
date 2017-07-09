@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
-    class Interaction
+    class Interaction : INotifyPropertyChanged
     {
         private Simulation simulation;
         private MouseEventArgs mouse;
@@ -22,6 +23,18 @@ namespace BridgeBuilder
         public int GridSize = 10;
         public PointF StickyMousePosition = new PointF();
         public PointF MousePosition = new PointF();
+
+        private bool placingRoads = false;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool PlacingRoads {
+            get { return placingRoads; }
+            set {
+                placingRoads = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlacingRoads"));
+            }
+        }
 
         public Interaction(Simulation simulation)
         {
@@ -163,10 +176,11 @@ namespace BridgeBuilder
             }
         }
 
+
         private void AddEdge(Vertex first, Vertex second)
         {
             Edge edge = simulation.AddEdge(first, second);
-            edge.IsRoad = Control.ModifierKeys == Keys.Shift;
+            edge.IsRoad = PlacingRoads;
         }
 
         private float RoundSnap(float x)
@@ -199,7 +213,7 @@ namespace BridgeBuilder
             return new PointF(x, y);
         }
 
-        internal void KeyPress(KeyEventArgs e)
+        internal void KeyUp(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F)
             {
@@ -209,6 +223,14 @@ namespace BridgeBuilder
             {
                 simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
             }
+            if (Control.ModifierKeys != Keys.Shift)
+                PlacingRoads = false;
+        }
+
+        internal void KeyDown(KeyEventArgs e)
+        {
+            if (Control.ModifierKeys == Keys.Shift)
+                PlacingRoads = true;
         }
 
         internal void MouseDown(MouseEventArgs e)
@@ -221,31 +243,34 @@ namespace BridgeBuilder
                 // levé tlačítko myši přesouvá body
                 Dragging = Hover.ToList(); // copy selected
 
-                // také vytváří nové spoje
-                if(Connector.Selected && !Hover.Any()) // pokud máme označený bod a nad žádným dalším bodem nedržíme myš
+                // také vytváří nové spoje (pokud neběží simulace)
+                if (simulation.Pause)
                 {
-                    // získáme vhodnou pozici pro nový bod (nejblíže k myši od označeného bodu)
-                    PointF candidatePosition = Connector.GetCandidate(MousePosition);
-                    // PointF candidatePosition = StickyMousePosition;
-                    // pokud existuje nějaký bod poblíž vhodné pozice
-                    var nearCandidate = simulation.Vertices.Where(v => { return candidatePosition.Sub(v.Position).Mag() < v.Radius; });
-                    if (nearCandidate.Any())
+                    if (Connector.Selected && !Hover.Any()) // pokud máme označený bod a nad žádným dalším bodem nedržíme myš
                     {
-                        // tak spojíme tento blízký bod a označený bod
-                        Connector.Connect(nearCandidate.First());
+                        // získáme vhodnou pozici pro nový bod (nejblíže k myši od označeného bodu)
+                        PointF candidatePosition = Connector.GetCandidate(MousePosition);
+                        // PointF candidatePosition = StickyMousePosition;
+                        // pokud existuje nějaký bod poblíž vhodné pozice
+                        var nearCandidate = simulation.Vertices.Where(v => { return candidatePosition.Sub(v.Position).Mag() < v.Radius; });
+                        if (nearCandidate.Any())
+                        {
+                            // tak spojíme tento blízký bod a označený bod
+                            Connector.Connect(nearCandidate.First());
+                        }
+                        else
+                        {
+                            // jinak vytvoříme bod nový
+                            Vertex vertex = simulation.AddVertex(candidatePosition.X, candidatePosition.Y);
+                            Connector.Connect(vertex);
+                        }
+
                     }
-                    else
+                    else // pokud nemáme označený bod nebo držíme nad nějakým myš
                     {
-                        // jinak vytvoříme bod nový
-                        Vertex vertex = simulation.AddVertex(candidatePosition.X, candidatePosition.Y);
-                        Connector.Connect(vertex);
+                        // zkusíme označit
+                        Connector.Connect();
                     }
-                    
-                }
-                else // pokud nemáme označený bod nebo držíme nad nějakým myš
-                {
-                    // zkusíme označit
-                    Connector.Connect();
                 }
             }
             // PRAVÉ TLAČÍTKO
