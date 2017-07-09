@@ -42,8 +42,8 @@ namespace BridgeBuilder
             interactionRenderer = new InteractionRenderer(interaction);
             testingStressRenderer = new TestingStressRenderer(testingStress);
 
-        // one-way databinding (hodnoty nezmění nic jiného než GUI)
-        speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
+            // one-way databinding (hodnoty nezmění nic jiného než GUI)
+            speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
 
             // two-way databinding
@@ -118,10 +118,10 @@ namespace BridgeBuilder
             while (running)
             {
                 Simulation s = simulation;
-                double now = sw.Elapsed.TotalMilliseconds/1000f;
-                
+                double now = sw.Elapsed.TotalMilliseconds / 1000f;
+
                 int cycle = 0;
-                while(simulationTime < now && ++cycle < maxCycles)
+                while (simulationTime < now && ++cycle < maxCycles)
                 {
                     for (int i = 0; i < precision; i++)
                     {
@@ -167,7 +167,7 @@ namespace BridgeBuilder
         private void exitButton_Click(object sender, EventArgs e)
         {
             running = false;
-            if(rendererThread != null)
+            if (rendererThread != null)
                 rendererThread.Join();
 
             Close();
@@ -216,7 +216,7 @@ namespace BridgeBuilder
                 simulation.LoadSimulation(loadedSimulation);
                 stream.Close();
             }
-            catch(IOException ex)
+            catch (IOException ex)
             {
                 MessageBox.Show("Bridge file not found", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -229,7 +229,7 @@ namespace BridgeBuilder
         // bridge testing
         private void testButton_Click(object sender, EventArgs e)
         {
-            if(!simulation.Pause)
+            if (!simulation.Pause)
                 testingStress.StartTest();
         }
     }

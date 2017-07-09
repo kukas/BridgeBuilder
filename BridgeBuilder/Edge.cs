@@ -12,7 +12,7 @@ namespace BridgeBuilder
     {
         public Vertex U { get; }
         public Vertex V { get; }
-        
+
         public float CurrentLength { get { return U.Position.Sub(V.Position).Mag(); } }
 
         public float Length;
@@ -30,7 +30,7 @@ namespace BridgeBuilder
 
             U = u;
             V = v;
-            
+
             ResetLength();
         }
 
@@ -51,7 +51,7 @@ namespace BridgeBuilder
             PointF delta = U.Position.Sub(V.Position);
             float distance = delta.Mag();
             float ratio = (distance - Length) / distance;
-            
+
             if (!V.Fixed)
             {
                 V.ConstrainedDelta = V.ConstrainedDelta.Add(delta.MultiplyScalar(ratio * 0.5f));
@@ -62,7 +62,7 @@ namespace BridgeBuilder
                 U.ConstrainedDelta = U.ConstrainedDelta.Add(delta.MultiplyScalar(-ratio * 0.5f));
                 U.ConstrainedCount++;
             }
-            
+
             /*
             if (!V.Fixed)
                 V.Position = V.Position.Add(delta.MultiplyScalar(ratio * 0.5f));

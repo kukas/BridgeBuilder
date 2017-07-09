@@ -14,7 +14,7 @@ namespace BridgeBuilder
 
         public decimal Speed { get; set; } = 50M;
         public decimal Weight { get; set; } = 5000M;
-        
+
         public bool Started { get { return currentRoad != null; } }
         public PointF Position = new PointF();
 
@@ -46,7 +46,7 @@ namespace BridgeBuilder
             if (currentRoad == null)
                 return;
 
-            currentPosition += (float)Speed*dt;
+            currentPosition += (float)Speed * dt;
             float ratio = currentPosition / currentRoad.Length;
             PointF uPos = currentRoad.U.Position, vPos = currentRoad.V.Position;
             Position = uPos.Add(vPos.Sub(uPos).MultiplyScalar(ratio));

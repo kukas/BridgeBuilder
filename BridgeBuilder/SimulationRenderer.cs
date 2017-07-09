@@ -24,7 +24,8 @@ namespace BridgeBuilder
             straincolor = new Pallete();
         }
 
-        class Pallete {
+        class Pallete
+        {
             // http://stackoverflow.com/questions/15868234/map-a-value-0-0-1-0-to-color-gain
             // paleta z: http://4.bp.blogspot.com/-d96rd-cACn0/TdUINqcBxuI/AAAAAAAAA9I/nGDXL7ksxAc/s1600/01-Deep_Rumba-A_Calm_in_the_Fire_of_Dances_2496-Cubana.flac.png
             double linear(double x, double start, double end)
@@ -52,9 +53,9 @@ namespace BridgeBuilder
 
             public Color GetColor(double v)
             {
-                int r = (int)(getR(v)*255);
-                int g = (int)(getG(v)*255);
-                int b = (int)(getB(v)*255);
+                int r = (int)(getR(v) * 255);
+                int g = (int)(getG(v) * 255);
+                int b = (int)(getB(v) * 255);
                 return Color.FromArgb(r, g, b);
             }
         }
@@ -95,7 +96,7 @@ namespace BridgeBuilder
                 if (RenderStrain)
                 {
                     float maxStrain = simulation.MaxStrain;
-                    var delta = 1 - e.CurrentLength/e.Length;
+                    var delta = 1 - e.CurrentLength / e.Length;
                     var strain = Math.Min(Math.Abs(delta), maxStrain);
                     p = new Pen(straincolor.GetColor(strain / maxStrain), 2);
 

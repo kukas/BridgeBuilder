@@ -25,9 +25,11 @@ namespace BridgeBuilder
         public PointF MousePosition = new PointF();
 
         private bool placingRoads = false;
-        public bool PlacingRoads {
+        public bool PlacingRoads
+        {
             get { return placingRoads; }
-            set {
+            set
+            {
                 placingRoads = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlacingRoads"));
             }
@@ -91,7 +93,7 @@ namespace BridgeBuilder
                         Vertex Second = interaction.Hover.FirstOrDefault(v => CanConnect(v.Position));
                         if (Second != null && Second != First)
                         {
-                            interaction.AddEdge(First,Second);
+                            interaction.AddEdge(First, Second);
                             First = Second;
                         }
                         else
@@ -151,8 +153,8 @@ namespace BridgeBuilder
 
                 if (interaction.SnapToGrid)
                 {
-                    mbd += interaction.GridSize/2-1;
-                    mdd += interaction.GridSize/2-1;
+                    mbd += interaction.GridSize / 2 - 1;
+                    mdd += interaction.GridSize / 2 - 1;
                 }
                 else
                 {
@@ -175,19 +177,19 @@ namespace BridgeBuilder
 
                 // Čtverec
                 if (Math.Abs(cand.X) > mbd)
-                    cand = new PointF(Math.Sign(cand.X)* mbd, Utils.Clamp(mbd / Math.Abs(cand.X) * cand.Y, -mbd, mbd));
+                    cand = new PointF(Math.Sign(cand.X) * mbd, Utils.Clamp(mbd / Math.Abs(cand.X) * cand.Y, -mbd, mbd));
                 if (Math.Abs(cand.Y) > mbd)
                     cand = new PointF(Utils.Clamp(mbd / Math.Abs(cand.Y) * cand.X, -mbd, mbd), Math.Sign(cand.Y) * mbd);
 
                 if (interaction.SnapToGrid)
                 {
-                    
+
                     // přichytávání k mřížce
                     float fractX = First.Position.X - interaction.FloorSnap(First.Position.X);
                     float fractY = First.Position.Y - interaction.FloorSnap(First.Position.Y);
-                    cand.X = interaction.TruncateSnap(cand.X + fractX)-fractX;
-                    cand.Y = interaction.TruncateSnap(cand.Y + fractY)-fractY;
-                    
+                    cand.X = interaction.TruncateSnap(cand.X + fractX) - fractX;
+                    cand.Y = interaction.TruncateSnap(cand.Y + fractY) - fractY;
+
                     // versus přichytávání relativně k označenému bodu
                     // cand.X = interaction.TruncateSnap(cand.X);
                     // cand.Y = interaction.TruncateSnap(cand.Y);
@@ -265,7 +267,7 @@ namespace BridgeBuilder
             {
                 if (FixingVertices && Hover.Any())
                     foreach (var v in Hover) v.Fixed = !v.Fixed;
-                if(AddingVertices)
+                if (AddingVertices)
                     simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
 
                 // levé tlačítko myši přesouvá body
@@ -305,7 +307,7 @@ namespace BridgeBuilder
             if (e.Button == MouseButtons.Right)
             {
                 // smaže vybrané hrany
-                if(HoverEdges.Any())
+                if (HoverEdges.Any())
                     simulation.RemoveEdges(HoverEdges);
                 if (Hover.Any())
                     simulation.RemoveVertices(Hover);
@@ -321,11 +323,12 @@ namespace BridgeBuilder
             StickyMousePosition = Snap(MousePosition);
 
             Hover = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
-            HoverEdges = simulation.Edges.Where(edge => {
+            HoverEdges = simulation.Edges.Where(edge =>
+            {
                 // https://en.wikipedia.org/wiki/Vector_projection
                 PointF delta = edge.U.Position.Sub(edge.V.Position);
                 float length = delta.Mag();
-                PointF unit = delta.MultiplyScalar(1f/length);
+                PointF unit = delta.MultiplyScalar(1f / length);
                 PointF deltaMouse = MousePosition.Sub(edge.V.Position);
                 float scalarProjection = unit.Dot(deltaMouse);
                 PointF a1 = unit.MultiplyScalar(scalarProjection);

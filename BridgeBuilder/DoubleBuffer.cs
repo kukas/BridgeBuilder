@@ -12,8 +12,10 @@ namespace BridgeBuilder
 
         int current = 0;
 
-        public Bitmap CurrentBitmap {
-            get {
+        public Bitmap CurrentBitmap
+        {
+            get
+            {
                 return bitmaps[current];
             }
         }

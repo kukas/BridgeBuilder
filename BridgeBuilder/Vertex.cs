@@ -51,7 +51,7 @@ namespace BridgeBuilder
 
             var drag = Velocity.MultiplyScalar(-(float)simulation.Damping);
             force = force.Add(drag);
-            
+
             if (Position.Y + Radius > simulation.Height)
                 force.Y -= (Position.Y + Radius - simulation.Height) * (float)simulation.GroundStrength + Velocity.Y * (float)simulation.GroundDamping;
 

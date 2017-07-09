@@ -16,7 +16,7 @@ namespace BridgeBuilder
 
         private ConcurrentBag<Vertex> newVertices;
         private ConcurrentBag<Edge> newEdges;
-        
+
 
         public decimal Damping { get; set; } = 0.01M;
         public decimal Stiffness { get; set; } = 1M;
@@ -59,11 +59,11 @@ namespace BridgeBuilder
             {
                 for (int y = 0; y < board.GetLength(1); y++)
                 {
-                    for (int dx = Math.Max(x-1, 0); dx <= Math.Min(x+1, board.GetLength(0)-1); dx++)
+                    for (int dx = Math.Max(x - 1, 0); dx <= Math.Min(x + 1, board.GetLength(0) - 1); dx++)
                     {
-                        for (int dy = Math.Max(y - 1, 0); dy <= Math.Min(y + 1, board.GetLength(1)-1); dy++)
+                        for (int dy = Math.Max(y - 1, 0); dy <= Math.Min(y + 1, board.GetLength(1) - 1); dy++)
                         {
-                            if(dx > x || dy > y)
+                            if (dx > x || dy > y)
                                 AddEdge(board[x, y], board[dx, dy]);
                         }
                     }
@@ -92,7 +92,7 @@ namespace BridgeBuilder
                 foreach (var v in Vertices) v.ApplyConstrains();
             }
             var tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
-            if(tooStrained.Any())
+            if (tooStrained.Any())
                 RemoveEdges(tooStrained);
         }
 

@@ -23,7 +23,7 @@ namespace BridgeBuilder
         }
         public static float MagSq(this PointF point)
         {
-            return point.X*point.X + point.Y*point.Y;
+            return point.X * point.X + point.Y * point.Y;
         }
         public static float Mag(this PointF point)
         {
@@ -47,7 +47,7 @@ namespace BridgeBuilder
         }
         public static float Dot(this PointF point, PointF v)
         {
-            return point.X*v.X + point.Y*v.Y;
+            return point.X * v.X + point.Y * v.Y;
         }
     }
 }
