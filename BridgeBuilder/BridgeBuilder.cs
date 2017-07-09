@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
-    public partial class Form1 : Form
+    public partial class BridgeBuilder : Form
     {
         private Thread rendererThread;
         private Thread simulationThread;
@@ -27,7 +27,7 @@ namespace BridgeBuilder
         private InteractionRenderer interactionRenderer;
         private TestingStressRenderer testingStressRenderer;
 
-        public Form1()
+        public BridgeBuilder()
         {
             InitializeComponent();
             KeyPreview = true; // needed for keyPress event to work
@@ -214,8 +214,9 @@ namespace BridgeBuilder
         // bridge testing
         private void testButton_Click(object sender, EventArgs e)
         {
-            if (!simulation.Pause)
-                testingStress.StartTest();
+            bool success = testingStress.StartTest();
+            if(!success)
+                MessageBox.Show("There are no roads on the scene. Testing cancelled.", "Bridge Testing problem", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }

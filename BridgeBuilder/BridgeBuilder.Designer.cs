@@ -1,6 +1,6 @@
 ﻿namespace BridgeBuilder
 {
-    partial class Form1
+    partial class BridgeBuilder
     {
         /// <summary>
         /// Required designer variable.
@@ -46,9 +46,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.addVerticesToggle = new System.Windows.Forms.CheckBox();
             this.fixingToggle = new System.Windows.Forms.CheckBox();
             this.roadToggle = new System.Windows.Forms.CheckBox();
-            this.addVerticesToggle = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).BeginInit();
@@ -252,6 +252,16 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Interaction";
             // 
+            // addVerticesToggle
+            // 
+            this.addVerticesToggle.AutoSize = true;
+            this.addVerticesToggle.Location = new System.Drawing.Point(7, 64);
+            this.addVerticesToggle.Name = "addVerticesToggle";
+            this.addVerticesToggle.Size = new System.Drawing.Size(76, 17);
+            this.addVerticesToggle.TabIndex = 2;
+            this.addVerticesToggle.Text = "add vertex";
+            this.addVerticesToggle.UseVisualStyleBackColor = true;
+            // 
             // fixingToggle
             // 
             this.fixingToggle.AutoSize = true;
@@ -267,20 +277,10 @@
             this.roadToggle.AutoSize = true;
             this.roadToggle.Location = new System.Drawing.Point(7, 18);
             this.roadToggle.Name = "roadToggle";
-            this.roadToggle.Size = new System.Drawing.Size(81, 17);
+            this.roadToggle.Size = new System.Drawing.Size(76, 17);
             this.roadToggle.TabIndex = 0;
-            this.roadToggle.Text = "place roads";
+            this.roadToggle.Text = "place road";
             this.roadToggle.UseVisualStyleBackColor = true;
-            // 
-            // addVerticesToggle
-            // 
-            this.addVerticesToggle.AutoSize = true;
-            this.addVerticesToggle.Location = new System.Drawing.Point(7, 64);
-            this.addVerticesToggle.Name = "addVerticesToggle";
-            this.addVerticesToggle.Size = new System.Drawing.Size(84, 17);
-            this.addVerticesToggle.TabIndex = 2;
-            this.addVerticesToggle.Text = "add vertices";
-            this.addVerticesToggle.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
