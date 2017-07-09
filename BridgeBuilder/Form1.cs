@@ -186,5 +186,10 @@ namespace BridgeBuilder
         {
             simulation.Pause = ((CheckBox)sender).Checked;
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            simulation.Clear();
+        }
     }
 }

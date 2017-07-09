@@ -111,5 +111,11 @@ namespace BridgeBuilder
             Edges = loadedSimulation.Edges;
             foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
         }
+
+        internal void Clear()
+        {
+            Vertices = new ConcurrentBag<Vertex>();
+            Edges = new ConcurrentBag<Edge>();
+        }
     }
 }
