@@ -106,12 +106,22 @@ namespace BridgeBuilder
                 g.DrawLine(p, v.Position, u.Position);
             }
 
-            if (interaction.Connector.First != null)
+            Vertex First = interaction.Connector.First;
+            if (First != null)
             {
-                RenderVertex(interaction.Connector.First, 14, (x, y, s) =>
+                RenderVertex(First, 14, (x, y, s) =>
                 {
                     g.DrawEllipse(Pens.White, x, y, s, s);
                 });
+
+                // PointF deltaMouse = First.Position.Sub(interaction.Mous);
+                if (interaction.Connector.CanConnect(interaction.StickyMousePosition))
+                {
+                    float[] dashValues = { 1, 1 };
+                    Pen blackPen = new Pen(Color.White, 2);
+                    blackPen.DashPattern = dashValues;
+                    g.DrawLine(blackPen, interaction.StickyMousePosition, First.Position);
+                }
             }
         }
 

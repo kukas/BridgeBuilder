@@ -80,9 +80,11 @@ namespace BridgeBuilder
             }
         }
 
-        public void AddVertex(float x, float y)
+        public Vertex AddVertex(float x, float y)
         {
-            Vertices.Add(new Vertex(this, x, y));
+            Vertex vertex = new Vertex(this, x, y);
+            Vertices.Add(vertex);
+            return vertex;
         }
 
         public void AddEdge(Vertex vertex1, Vertex vertex2)
