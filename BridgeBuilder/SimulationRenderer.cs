@@ -93,8 +93,7 @@ namespace BridgeBuilder
                 Vertex u = e.U;
                 Vertex v = e.V;
                 Pen p = Pens.White;
-                if (!interaction.Connector.CanConnect(u.Position, v.Position) && simulation.Pause)
-                    p = Pens.Red;
+
                 if (RenderStrain)
                 {
                     float maxStrain = simulation.MaxStrain;
