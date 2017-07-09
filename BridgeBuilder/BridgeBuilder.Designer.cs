@@ -257,9 +257,9 @@
             this.addVerticesToggle.AutoSize = true;
             this.addVerticesToggle.Location = new System.Drawing.Point(7, 64);
             this.addVerticesToggle.Name = "addVerticesToggle";
-            this.addVerticesToggle.Size = new System.Drawing.Size(76, 17);
+            this.addVerticesToggle.Size = new System.Drawing.Size(92, 17);
             this.addVerticesToggle.TabIndex = 2;
-            this.addVerticesToggle.Text = "add vertex";
+            this.addVerticesToggle.Text = "add vertex [A]";
             this.addVerticesToggle.UseVisualStyleBackColor = true;
             // 
             // fixingToggle
@@ -267,9 +267,9 @@
             this.fixingToggle.AutoSize = true;
             this.fixingToggle.Location = new System.Drawing.Point(7, 41);
             this.fixingToggle.Name = "fixingToggle";
-            this.fixingToggle.Size = new System.Drawing.Size(68, 17);
+            this.fixingToggle.Size = new System.Drawing.Size(83, 17);
             this.fixingToggle.TabIndex = 1;
-            this.fixingToggle.Text = "fix vertex";
+            this.fixingToggle.Text = "fix vertex [F]";
             this.fixingToggle.UseVisualStyleBackColor = true;
             // 
             // roadToggle
@@ -277,9 +277,9 @@
             this.roadToggle.AutoSize = true;
             this.roadToggle.Location = new System.Drawing.Point(7, 18);
             this.roadToggle.Name = "roadToggle";
-            this.roadToggle.Size = new System.Drawing.Size(76, 17);
+            this.roadToggle.Size = new System.Drawing.Size(106, 17);
             this.roadToggle.TabIndex = 0;
-            this.roadToggle.Text = "place road";
+            this.roadToggle.Text = "place road [Shift]";
             this.roadToggle.UseVisualStyleBackColor = true;
             // 
             // BridgeBuilder

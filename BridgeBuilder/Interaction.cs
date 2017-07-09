@@ -216,12 +216,6 @@ namespace BridgeBuilder
             return (float)Math.Floor(x / GridSize) * GridSize;
         }
 
-        private float CeilSnap(float x)
-        {
-            return (float)Math.Ceiling(x / GridSize) * GridSize;
-        }
-
-
         private float TruncateSnap(float x)
         {
             return (float)Math.Truncate(x / GridSize) * GridSize;
@@ -240,7 +234,7 @@ namespace BridgeBuilder
         {
             if (e.KeyCode == Keys.F)
                 FixingVertices = false;
-            if (e.KeyCode == Keys.D)
+            if (e.KeyCode == Keys.A)
                 AddingVertices = false;
 
             if (Control.ModifierKeys != Keys.Shift)
@@ -251,7 +245,7 @@ namespace BridgeBuilder
         {
             if (e.KeyCode == Keys.F)
                 FixingVertices = true;
-            if (e.KeyCode == Keys.D)
+            if (e.KeyCode == Keys.A)
                 AddingVertices = true;
 
             if (Control.ModifierKeys == Keys.Shift)
@@ -266,9 +260,16 @@ namespace BridgeBuilder
             if (e.Button == MouseButtons.Left)
             {
                 if (FixingVertices && Hover.Any())
+                {
                     foreach (var v in Hover) v.Fixed = !v.Fixed;
+                    return;
+                }
+                    
                 if (AddingVertices)
+                {
                     simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
+                    return;
+                }
 
                 // levé tlačítko myši přesouvá body
                 Dragging = Hover.ToList(); // copy selected
