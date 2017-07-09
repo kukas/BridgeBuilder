@@ -46,8 +46,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.roadToggle = new System.Windows.Forms.CheckBox();
             this.fixingToggle = new System.Windows.Forms.CheckBox();
+            this.roadToggle = new System.Windows.Forms.CheckBox();
+            this.addVerticesToggle = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).BeginInit();
@@ -245,6 +246,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.addVerticesToggle);
             this.groupBox4.Controls.Add(this.fixingToggle);
             this.groupBox4.Controls.Add(this.roadToggle);
             this.groupBox4.Location = new System.Drawing.Point(634, 466);
@@ -253,6 +255,16 @@
             this.groupBox4.TabIndex = 21;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Interaction";
+            // 
+            // fixingToggle
+            // 
+            this.fixingToggle.AutoSize = true;
+            this.fixingToggle.Location = new System.Drawing.Point(7, 41);
+            this.fixingToggle.Name = "fixingToggle";
+            this.fixingToggle.Size = new System.Drawing.Size(68, 17);
+            this.fixingToggle.TabIndex = 1;
+            this.fixingToggle.Text = "fix vertex";
+            this.fixingToggle.UseVisualStyleBackColor = true;
             // 
             // roadToggle
             // 
@@ -264,15 +276,15 @@
             this.roadToggle.Text = "place roads";
             this.roadToggle.UseVisualStyleBackColor = true;
             // 
-            // fixingToggle
+            // addVerticesToggle
             // 
-            this.fixingToggle.AutoSize = true;
-            this.fixingToggle.Location = new System.Drawing.Point(7, 41);
-            this.fixingToggle.Name = "fixingToggle";
-            this.fixingToggle.Size = new System.Drawing.Size(68, 17);
-            this.fixingToggle.TabIndex = 1;
-            this.fixingToggle.Text = "fix vertex";
-            this.fixingToggle.UseVisualStyleBackColor = true;
+            this.addVerticesToggle.AutoSize = true;
+            this.addVerticesToggle.Location = new System.Drawing.Point(7, 64);
+            this.addVerticesToggle.Name = "addVerticesToggle";
+            this.addVerticesToggle.Size = new System.Drawing.Size(84, 17);
+            this.addVerticesToggle.TabIndex = 2;
+            this.addVerticesToggle.Text = "add vertices";
+            this.addVerticesToggle.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -325,6 +337,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox roadToggle;
         private System.Windows.Forms.CheckBox fixingToggle;
+        private System.Windows.Forms.CheckBox addVerticesToggle;
     }
 }
 

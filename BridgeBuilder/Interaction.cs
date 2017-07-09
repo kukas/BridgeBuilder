@@ -44,6 +44,17 @@ namespace BridgeBuilder
             }
         }
 
+        private bool addingVertices = false;
+        public bool AddingVertices
+        {
+            get { return addingVertices; }
+            set
+            {
+                addingVertices = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddingVertices"));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Interaction(Simulation simulation)
@@ -227,11 +238,9 @@ namespace BridgeBuilder
         {
             if (e.KeyCode == Keys.F)
                 FixingVertices = false;
-
             if (e.KeyCode == Keys.D)
-            {
-                simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
-            }
+                AddingVertices = false;
+
             if (Control.ModifierKeys != Keys.Shift)
                 PlacingRoads = false;
         }
@@ -240,6 +249,8 @@ namespace BridgeBuilder
         {
             if (e.KeyCode == Keys.F)
                 FixingVertices = true;
+            if (e.KeyCode == Keys.D)
+                AddingVertices = true;
 
             if (Control.ModifierKeys == Keys.Shift)
                 PlacingRoads = true;
@@ -254,6 +265,8 @@ namespace BridgeBuilder
             {
                 if (FixingVertices && Hover.Any())
                     foreach (var v in Hover) v.Fixed = !v.Fixed;
+                if(AddingVertices)
+                    simulation.AddVertex(StickyMousePosition.X, StickyMousePosition.Y);
 
                 // levé tlačítko myši přesouvá body
                 Dragging = Hover.ToList(); // copy selected

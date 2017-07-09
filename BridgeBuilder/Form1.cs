@@ -43,6 +43,7 @@ namespace BridgeBuilder
             // two-way databinding
             roadToggle.DataBindings.Add("Checked", interaction, "PlacingRoads", true, DataSourceUpdateMode.OnPropertyChanged);
             fixingToggle.DataBindings.Add("Checked", interaction, "FixingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
+            addVerticesToggle.DataBindings.Add("Checked", interaction, "AddingVertices", true, DataSourceUpdateMode.OnPropertyChanged);
 
             pauseToggle.Checked = simulation.Pause;
             gravitationToggle.Checked = simulation.Gravitation;
