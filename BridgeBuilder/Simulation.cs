@@ -18,13 +18,12 @@ namespace BridgeBuilder
         private ConcurrentBag<Edge> newEdges;
 
 
-        public decimal Damping { get; set; } = 0.01M;
-        public decimal Stiffness { get; set; } = 1M;
-        public decimal GravitationStrength { get; set; } = 1000M;
-        public decimal DraggingStrength { get; set; } = 500M;
-        public decimal DraggingDamping { get; set; } = 50M;
-        public decimal GroundStrength { get; set; } = 5000M;
-        public decimal GroundDamping { get; set; } = 5M;
+        public float Damping = 0.01f;
+        public float GravitationStrength = 5000f;
+        public float DraggingStrength = 500f;
+        public float DraggingDamping = 50f;
+        public float GroundStrength = 5000f;
+        public float GroundDamping = 5f;
 
         public int Width { get; private set; }
         public int Height { get; private set; }

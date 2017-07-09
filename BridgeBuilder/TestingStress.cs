@@ -12,8 +12,8 @@ namespace BridgeBuilder
         private Edge currentRoad;
         private float currentPosition = 0;
 
-        public decimal Speed { get; set; } = 50M;
-        public decimal Weight { get; set; } = 5000M;
+        public decimal Speed { get; set; } = 150M;
+        public decimal Weight { get; set; } = 30000M;
 
         public bool Started { get { return currentRoad != null; } }
         public PointF Position = new PointF();

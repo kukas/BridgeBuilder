@@ -45,20 +45,20 @@ namespace BridgeBuilder
             Force = new PointF();
 
             if (simulation.Gravitation)
-                force.Y += (float)simulation.GravitationStrength;
+                force.Y += simulation.GravitationStrength;
 
             PointF Velocity = Position.Sub(PrevPos).MultiplyScalar(1f / dt);
 
-            var drag = Velocity.MultiplyScalar(-(float)simulation.Damping);
+            var drag = Velocity.MultiplyScalar(-simulation.Damping);
             force = force.Add(drag);
 
             if (Position.Y + Radius > simulation.Height)
-                force.Y -= (Position.Y + Radius - simulation.Height) * (float)simulation.GroundStrength + Velocity.Y * (float)simulation.GroundDamping;
+                force.Y -= (Position.Y + Radius - simulation.Height) * simulation.GroundStrength + Velocity.Y * simulation.GroundDamping;
 
             if (targetSet)
             {
-                var draggingForce = target.Sub(Position).MultiplyScalar((float)simulation.DraggingStrength);
-                var damping = Velocity.MultiplyScalar(-(float)simulation.DraggingDamping);
+                var draggingForce = target.Sub(Position).MultiplyScalar(simulation.DraggingStrength);
+                var damping = Velocity.MultiplyScalar(-simulation.DraggingDamping);
                 force = force.Add(draggingForce).Add(damping);
             }
             return force;
