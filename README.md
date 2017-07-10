@@ -65,9 +65,11 @@ Po prvním spuštění bude plocha simulace prázdná. Pro umístění prvního 
 
 Pro stavbu mostů je potřeba umístit do prostoru pevné body, které most bude spojovat. Zastavte tedy simulaci (zaškrtněte _pause simulation_), umístěte nový bod (zaškrtněte _add vertex_, umístěte bod, odškrtněte _add vertex_), umístěte 3 trámy vedle sebe (do přímky) a nyní zaškrtněte _fix vertex_, klikněte na oba krajní body této lávky (měl by se kolem nich objevit čtverec), odškrtněte _fix vertex_. Spusťte simulaci, lávka by měla držet mezi zafixovanými krajními body. Váš první most je hotový.
 
-![první most](screenshots/first_bridge.png)
+![první most](screenshots/fixed_line.png)
 
 Pokud bychom chtěli most otestovat (tlačítko _Run test_), narazíme na problém, jelikož lávka se skládá pouze z trámů. Stiskněte tedy tlačítko _Clear_, opakujte předchozí postup vytváření lávky, nicméně při umisťování trámů zaškrtněte _place road_ (případně držte `Shift`). Nyní by se lávka měla skládat z dvojitých čar, které značí vozovku.
+
+![první most](screenshots/first_bridge.png)
 
 Před testováním je dobré si most uložit, klikněte na tlačítko _Save_, pro zajímavější pohled na simulaci zaškrtněte _show stress_ a pak klikněte na _Run test_. Testování probíhá přejezdem závaží (vizualizovaném kruhem, valícím se po vozovce). Zjistíme, že naše lávka se pod zátěží přetrhla.
 
