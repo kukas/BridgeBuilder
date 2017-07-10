@@ -61,6 +61,8 @@ Myší lze:
 ### První most
 Po prvním spuštění bude plocha simulace prázdná. Pro umístění prvního bodu zaškrtněte checkbox _add vertex_ a klikněte kamkoli do černé plochy. Umístí se zde bod, ze kterého lze při stavbě vycházet. Odškrtněte _add vertex_, klikněte na přidaný bod a dalším klikáním mimo rozšiřujte vznikající most. Pro účely návodu vytvořte trojúhelník (levým tlačítkem lze vybrat existující body, a také nové přidávat, pravým tlačítkem zrušíte výběr). Nyní odškrtněte _pause simulation_ pro spuštění simulace, trojúhelník by měl spadnout k zemi. Při spuštěné simulaci nelze přidávat body/trámy, nicméně lze se simulací interagovat. Pomocí myši vezměte trojúhelník a pohybujte s ním po ploše.
 
+![první most](screenshots/triangle.png)
+
 Pro stavbu mostů je potřeba umístit do prostoru pevné body, které most bude spojovat. Zastavte tedy simulaci (zaškrtněte _pause simulation_), umístěte nový bod (zaškrtněte _add vertex_, umístěte bod, odškrtněte _add vertex_), umístěte 3 trámy vedle sebe (do přímky) a nyní zaškrtněte _fix vertex_, klikněte na oba krajní body této lávky (měl by se kolem nich objevit čtverec), odškrtněte _fix vertex_. Spusťte simulaci, lávka by měla držet mezi zafixovanými krajními body. Váš první most je hotový.
 
 ![první most](screenshots/first_bridge.png)
