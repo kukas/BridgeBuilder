@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Edge.cs" />
+    <Compile Include="Simulation\Edge.cs" />
     <Compile Include="Interaction.cs" />
-    <Compile Include="InteractionRenderer.cs" />
-    <Compile Include="Renderer.cs" />
+    <Compile Include="Renderers\InteractionRenderer.cs" />
+    <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="DoubleBuffer.cs" />
     <Compile Include="BridgeBuilderForm.cs">
@@ -61,12 +61,12 @@
     <Compile Include="FpsMeter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simulation.cs" />
-    <Compile Include="SimulationRenderer.cs" />
+    <Compile Include="Simulation\Simulation.cs" />
+    <Compile Include="Renderers\SimulationRenderer.cs" />
     <Compile Include="TestingStress.cs" />
-    <Compile Include="TestingStressRenderer.cs" />
+    <Compile Include="Renderers\TestingStressRenderer.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Vertex.cs" />
+    <Compile Include="Simulation\Vertex.cs" />
     <EmbeddedResource Include="BridgeBuilderForm.resx">
       <DependentUpon>BridgeBuilderForm.cs</DependentUpon>
     </EmbeddedResource>
