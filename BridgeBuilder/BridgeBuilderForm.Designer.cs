@@ -62,7 +62,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(13, 13);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1002, 446);
+            this.pictureBox1.Size = new System.Drawing.Size(813, 379);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -71,7 +71,7 @@
             // 
             // exitButton
             // 
-            this.exitButton.Location = new System.Drawing.Point(940, 543);
+            this.exitButton.Location = new System.Drawing.Point(751, 474);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(75, 23);
             this.exitButton.TabIndex = 1;
@@ -207,7 +207,7 @@
             this.groupBox1.Controls.Add(this.pauseToggle);
             this.groupBox1.Controls.Add(this.gravitationToggle);
             this.groupBox1.Controls.Add(this.snapToggle);
-            this.groupBox1.Location = new System.Drawing.Point(13, 465);
+            this.groupBox1.Location = new System.Drawing.Point(13, 397);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 100);
             this.groupBox1.TabIndex = 18;
@@ -221,7 +221,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.weightUpDown);
-            this.groupBox2.Location = new System.Drawing.Point(220, 466);
+            this.groupBox2.Location = new System.Drawing.Point(220, 398);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(200, 100);
             this.groupBox2.TabIndex = 19;
@@ -233,9 +233,9 @@
             this.groupBox3.Controls.Add(this.loadButton);
             this.groupBox3.Controls.Add(this.saveButton);
             this.groupBox3.Controls.Add(this.clearButton);
-            this.groupBox3.Location = new System.Drawing.Point(427, 466);
+            this.groupBox3.Location = new System.Drawing.Point(427, 398);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 100);
+            this.groupBox3.Size = new System.Drawing.Size(168, 100);
             this.groupBox3.TabIndex = 20;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Scene";
@@ -245,9 +245,9 @@
             this.groupBox4.Controls.Add(this.addVerticesToggle);
             this.groupBox4.Controls.Add(this.fixingToggle);
             this.groupBox4.Controls.Add(this.roadToggle);
-            this.groupBox4.Location = new System.Drawing.Point(634, 466);
+            this.groupBox4.Location = new System.Drawing.Point(601, 397);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(200, 100);
+            this.groupBox4.Size = new System.Drawing.Size(145, 100);
             this.groupBox4.TabIndex = 21;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Interaction";
@@ -282,18 +282,18 @@
             this.roadToggle.Text = "place road [Shift]";
             this.roadToggle.UseVisualStyleBackColor = true;
             // 
-            // BridgeBuilder
+            // BridgeBuilderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1027, 577);
+            this.ClientSize = new System.Drawing.Size(838, 504);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.exitButton);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "BridgeBuilder";
+            this.Name = "BridgeBuilderForm";
             this.Text = "Bridge Builder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BridgeBuilder_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
