@@ -233,9 +233,9 @@ namespace BridgeBuilder
         internal void KeyUp(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F)
-                FixingVertices = false;
+                FixingVertices = !FixingVertices;
             if (e.KeyCode == Keys.A)
-                AddingVertices = false;
+                AddingVertices = !AddingVertices;
 
             if (Control.ModifierKeys != Keys.Shift)
                 PlacingRoads = false;
@@ -243,11 +243,6 @@ namespace BridgeBuilder
 
         internal void KeyDown(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F)
-                FixingVertices = true;
-            if (e.KeyCode == Keys.A)
-                AddingVertices = true;
-
             if (Control.ModifierKeys == Keys.Shift)
                 PlacingRoads = true;
         }
