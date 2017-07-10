@@ -13,7 +13,7 @@ namespace BridgeBuilder
 
         public override void Render(Graphics g)
         {
-
+            // vykreslení kruhu, který se při testování valí po mostě
             if (testingStress.Started)
             {
                 Pen p = Pens.White;

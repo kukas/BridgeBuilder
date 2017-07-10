@@ -14,7 +14,6 @@ namespace BridgeBuilder
         private ConcurrentBag<Vertex> newVertices;
         private ConcurrentBag<Edge> newEdges;
 
-
         public float Damping = 0.01f;
         public float GravitationStrength = 5000f;
         public float DraggingStrength = 500f;
@@ -41,30 +40,37 @@ namespace BridgeBuilder
 
         public void Update(float dt)
         {
+            // záměna seznamu hran (s odebranými trámy)
             if (newEdges != null)
             {
                 Edges = newEdges;
                 newEdges = null;
             }
+            // záměna seznamu vrcholů (s odebranými body)
             if (newVertices != null)
             {
                 Vertices = newVertices;
                 newVertices = null;
             }
             if (Pause) return;
+
+            // update bodů
             foreach (Vertex v in Vertices) v.Update(dt);
+            // update trámů = "relaxace"
             for (int i = 0; i < relaxationSteps; i++)
             {
-                foreach (Vertex v in Vertices) v.ResetConstrains();
+                foreach (Vertex v in Vertices) v.ResetConstraints();
                 foreach (Edge e in Edges) e.Relax();
-                foreach (Vertex v in Vertices) v.ApplyConstrains();
+                foreach (Vertex v in Vertices) v.ApplyConstraints();
             }
-
+            
+            // odebere příliš namáhané trámy
             IEnumerable<Edge> tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
             if (tooStrained.Any())
                 RemoveEdges(tooStrained);
 
-            // tolerance v Y ose - kvůli kolizím se zemí (míček se při kolizi občas na chvíli protuneluje mimo obraz)
+            // odebere body mimo obraz
+            // tolerance na Y ose - kvůli kolizím se zemí (míček se při kolizi občas na chvíli protuneluje mimo obraz)
             const float d = 50;
             IEnumerable<Vertex> tooFar = Vertices.Where(v => v.Position.X < 0 || v.Position.X > Width || v.Position.Y < -d || v.Position.Y > Height+d);
             if (tooFar.Any())

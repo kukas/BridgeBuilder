@@ -21,10 +21,16 @@ namespace BridgeBuilder
             straincolor = new Pallete();
         }
 
+        /// <summary>
+        /// Pomocná třída pro mapování intervalu [0.0, 1.0] do barvy
+        /// Hodnoty mimo definiční interval nabívají barvy v extrémech
+        /// </summary>
+        /// <remarks>
+        /// Implementace http://stackoverflow.com/questions/15868234/map-a-value-0-0-1-0-to-color-gain
+        /// Paleta získána z obrázku: http://4.bp.blogspot.com/-d96rd-cACn0/TdUINqcBxuI/AAAAAAAAA9I/nGDXL7ksxAc/s1600/01-Deep_Rumba-A_Calm_in_the_Fire_of_Dances_2496-Cubana.flac.png
+        /// </remarks>
         private class Pallete
         {
-            // http://stackoverflow.com/questions/15868234/map-a-value-0-0-1-0-to-color-gain
-            // paleta z: http://4.bp.blogspot.com/-d96rd-cACn0/TdUINqcBxuI/AAAAAAAAA9I/nGDXL7ksxAc/s1600/01-Deep_Rumba-A_Calm_in_the_Fire_of_Dances_2496-Cubana.flac.png
             private static double Linear(double x, double start, double end)
             {
                 if (x < start)
@@ -50,6 +56,11 @@ namespace BridgeBuilder
                 return Linear(value, 0.75, 1.0) + (Linear(value, -0.2, 57.0 / 200.0) - Linear(value, 63.0 / 200.0, 120.0 / 200.0)) * 0.5;
             }
 
+            /// <summary>
+            /// Vrátí barvu pro danou hodnotu
+            /// </summary>
+            /// <param name="v">Hodnota</param>
+            /// <returns>Barva hodnoty</returns>
             public Color GetColor(double v)
             {
                 int r = (int)(GetR(v) * 255);
@@ -61,6 +72,7 @@ namespace BridgeBuilder
 
         public override void Render(Graphics g)
         {
+            // vykreslení mřížky při zapnutém zachycování
             if (interaction.SnapToGrid)
             {
                 Brush b = Brushes.DimGray;
@@ -69,6 +81,7 @@ namespace BridgeBuilder
                         g.FillRectangle(b, x, y, 1, 1);
             }
 
+            // kreslení bodů
             foreach (Vertex v in simulation.Vertices)
             {
                 RenderVertex(v.Position, v.Radius, (x, y, s) =>
@@ -78,6 +91,7 @@ namespace BridgeBuilder
                     else
                         g.DrawEllipse(Pens.White, x, y, s, s);
                 });
+
                 if (v.Fixed)
                 {
                     RenderVertex(v.Position, 14, (x, y, s) =>
@@ -86,6 +100,8 @@ namespace BridgeBuilder
                     });
                 }
             }
+            
+            // kreslení hran
             foreach (Edge e in simulation.Edges)
             {
                 Vertex u = e.U;
@@ -103,8 +119,10 @@ namespace BridgeBuilder
                     // var pos = u.Position.Add(v.Position).MultiplyScalar(0.5f);
                     // g.DrawString(String.Format("{0:0.00}", strain / maxStrain), new Font("Arial", 8), new SolidBrush(Color.White), pos.X, pos.Y);
                 }
+
                 if (interaction.HoverEdges.Contains(e))
                     p = new Pen(Color.White, 2);
+
                 g.DrawLine(p, v.Position, u.Position);
 
                 if (e.IsRoad)

@@ -20,30 +20,34 @@ namespace BridgeBuilder
         public override void Render(Graphics g)
         {
             Vertex first = interaction.Connector.First;
-            if (first != null)
+            // pokud je vybraný nějaký bod
+            if (interaction.Connector.Selected)
             {
+                // nakreslí kolem něj kolečko
                 RenderVertex(first.Position, 14, (x, y, s) =>
                 {
                     g.DrawEllipse(Pens.White, x, y, s, s);
                 });
 
-                if (interaction.Connector.Selected)
-                {
-                    PointF candidate;
-                    if (interaction.Hover.Any())
-                        candidate = interaction.Hover.First().Position;
-                    else
-                        candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
+                // nalezne vhodný bod pro spojení s vybraným
+                // a vykreslí ho čárkovaně
+                PointF candidate;
+                if (interaction.Hover.Any()) // pokud myš ukazuje na existující bod, vybere ten
+                    candidate = interaction.Hover.First().Position;
+                else // pokud ne, vybere nový
+                    candidate = interaction.Connector.GetCandidate(interaction.MousePosition);
 
-                    if (interaction.Connector.CanConnect(candidate))
-                        g.DrawLine(dashedPen, candidate, first.Position);
-                    RenderVertex(candidate, 10, (x, y, s) =>
-                    {
-                        g.DrawEllipse(dashedPen, x, y, s, s);
-                    });
-                }
+                // linku zobrazí jen, pokud body lze spojit
+                if (interaction.Connector.FirstCanConnect(candidate))
+                    g.DrawLine(dashedPen, candidate, first.Position);
+
+                RenderVertex(candidate, 10, (x, y, s) =>
+                {
+                    g.DrawEllipse(dashedPen, x, y, s, s);
+                });
             }
 
+            // při přidávání nového bodu vykreslí čárkovaně bod na aktuální pozici
             if (interaction.AddingVertices)
                 RenderVertex(interaction.StickyMousePosition, 10, (x, y, s) =>
                 {

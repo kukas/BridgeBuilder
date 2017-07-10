@@ -10,13 +10,13 @@ namespace BridgeBuilder
 
         public PointF ConstrainedDelta;
         public int ConstrainedCount;
+
         public PointF Position;
         public PointF PrevPos;
         public PointF Force;
 
         public bool Fixed = false;
         public float Radius = 10f;
-        public float Mass = 1f;
 
         private PointF target;
         private bool targetSet;
@@ -34,26 +34,33 @@ namespace BridgeBuilder
 
         private PointF ComputeForces(float dt)
         {
+            // Výsledná síla se skládá ze:
+            // - zátěže při testování
             PointF force = Force;
             Force = new PointF();
 
+            // - působení gravitace
             if (simulation.Gravitation)
                 force.Y += simulation.GravitationStrength;
 
             PointF velocity = Position.Sub(PrevPos).MultiplyScalar(1f / dt);
 
+            // - "odporu vzduchu" = přirozené ztrácení celkové energie systému
             PointF drag = velocity.MultiplyScalar(-simulation.Damping);
             force = force.Add(drag);
 
+            // - působení země při kolizi s ní
             if (Position.Y + Radius > simulation.Height)
                 force.Y -= (Position.Y + Radius - simulation.Height) * simulation.GroundStrength + velocity.Y * simulation.GroundDamping;
 
+            // - působení myši při přesunu v módu simulace
             if (targetSet)
             {
                 PointF draggingForce = target.Sub(Position).MultiplyScalar(simulation.DraggingStrength);
                 PointF damping = velocity.MultiplyScalar(-simulation.DraggingDamping);
                 force = force.Add(draggingForce).Add(damping);
             }
+
             return force;
         }
 
@@ -73,17 +80,18 @@ namespace BridgeBuilder
             Position = nextPos;
         }
 
-        public void ResetConstrains()
+        public void ResetConstraints()
         {
             ConstrainedDelta = new PointF();
             ConstrainedCount = 0;
         }
 
-        internal void ApplyConstrains()
+        internal void ApplyConstraints()
         {
             // asi hloupost:
             // float a = (float)simulation.Stiffness;
             // Position = Position.Add(ConstrainedDelta.MultiplyScalar(1f / (a*ConstrainedCount+1-a)));
+
             if (ConstrainedCount > 0)
                 Position = Position.Add(ConstrainedDelta.MultiplyScalar(1f / ConstrainedCount));
         }

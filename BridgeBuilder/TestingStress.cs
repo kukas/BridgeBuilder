@@ -29,6 +29,7 @@ namespace BridgeBuilder
             if (!roads.Any())
                 return false;
 
+            // nalezne nejlevější vozovku
             Edge leftmost = roads.First();
 
             foreach (Edge road in roads)
@@ -46,15 +47,21 @@ namespace BridgeBuilder
                 return;
 
             currentPosition += (float)Speed * dt;
+
             float ratio = currentPosition / currentRoad.Length;
             PointF uPos = currentRoad.U.Position, vPos = currentRoad.V.Position;
+            
+            // pozice závaží
             Position = uPos.Add(vPos.Sub(uPos).MultiplyScalar(ratio));
+
             if (ratio > 1)
             {
                 NextRoad();
             }
             else
             {
+                // aplikuje sílu na oba body hrany
+                // v poměru podle pozice závaží na hraně
                 float maxLoad = (float)Weight;
                 float uForce = 1 - ratio;
                 currentRoad.U.ApplyForce(new PointF(0, maxLoad * uForce));

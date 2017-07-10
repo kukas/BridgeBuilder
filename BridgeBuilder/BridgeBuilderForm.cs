@@ -115,10 +115,8 @@ namespace BridgeBuilder
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            const int precision = 1;
             const int maxCycles = 10;
             const float dt = 0.004f;
-            const float dtSimulation = dt / precision;
             while (running)
             {
                 Simulation s = simulation;
@@ -127,14 +125,10 @@ namespace BridgeBuilder
                 int cycle = 0;
                 while (simulationTime < now && ++cycle < maxCycles)
                 {
-                    for (int i = 0; i < precision; i++)
-                    {
-                        s.Update(dtSimulation);
-                        testingStress.Update(dtSimulation);
-                    }
+                    s.Update(dt);
+                    testingStress.Update(dt);
                     simulationTime += dt;
                 }
-                // Debug.WriteLine(cycle);
                 Thread.Sleep(4);
             }
             sw.Stop();
@@ -170,10 +164,7 @@ namespace BridgeBuilder
         // GUI interaction events
         private void exitButton_Click(object sender, EventArgs e)
         {
-            running = false;
-            rendererThread?.Join();
-            simulationThread?.Join();
-
+            PrepareClose();
             Close();
         }
 
@@ -223,6 +214,11 @@ namespace BridgeBuilder
         }
 
         private void BridgeBuilder_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            PrepareClose();
+        }
+
+        private void PrepareClose()
         {
             running = false;
             rendererThread?.Join();
