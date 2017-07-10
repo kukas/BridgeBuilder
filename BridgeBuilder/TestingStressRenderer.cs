@@ -2,9 +2,9 @@
 
 namespace BridgeBuilder
 {
-    class TestingStressRenderer : Renderer
+    internal class TestingStressRenderer : Renderer
     {
-        private TestingStress testingStress;
+        private readonly TestingStress testingStress;
 
         public TestingStressRenderer(TestingStress testingStress)
         {

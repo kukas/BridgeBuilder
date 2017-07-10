@@ -1,6 +1,6 @@
 ﻿namespace BridgeBuilder
 {
-    partial class BridgeBuilder
+    partial class BridgeBuilderForm
     {
         /// <summary>
         /// Required designer variable.
@@ -294,7 +294,7 @@
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.pictureBox1);
             this.Name = "BridgeBuilder";
-            this.Text = "Form1";
+            this.Text = "Bridge Builder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BridgeBuilder_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);

@@ -4,34 +4,17 @@ namespace BridgeBuilder
 {
     internal class DoubleBuffer
     {
-        private int height;
-        private int width;
+        private readonly Bitmap[] bitmaps;
+        private readonly Graphics[] graphics;
 
-        Bitmap[] bitmaps;
-        Graphics[] graphics;
+        private int current;
 
-        int current = 0;
+        public Bitmap CurrentBitmap => bitmaps[current];
 
-        public Bitmap CurrentBitmap
-        {
-            get
-            {
-                return bitmaps[current];
-            }
-        }
-        public Graphics CurrentGraphics
-        {
-            get
-            {
-                return graphics[current];
-            }
-        }
+        public Graphics CurrentGraphics => graphics[current];
 
         public DoubleBuffer(int width, int height)
         {
-            this.width = width;
-            this.height = height;
-
             bitmaps = new Bitmap[2];
             graphics = new Graphics[2];
 

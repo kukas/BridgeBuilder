@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
-    class Interaction : INotifyPropertyChanged
+    internal class Interaction : INotifyPropertyChanged
     {
-        private Simulation simulation;
-        private MouseEventArgs mouse;
+        private readonly Simulation simulation;
 
         public VertexConnector Connector;
         public IEnumerable<Vertex> Hover { get; private set; } = Enumerable.Empty<Vertex>();
@@ -21,10 +17,10 @@ namespace BridgeBuilder
         public IEnumerable<Vertex> Dragging { get; private set; } = Enumerable.Empty<Vertex>();
         public bool SnapToGrid { get; set; } = true;
         public int GridSize = 10;
-        public PointF StickyMousePosition = new PointF();
-        public PointF MousePosition = new PointF();
+        public PointF StickyMousePosition;
+        public PointF MousePosition;
 
-        private bool placingRoads = false;
+        private bool placingRoads;
         public bool PlacingRoads
         {
             get { return placingRoads; }
@@ -35,7 +31,7 @@ namespace BridgeBuilder
             }
         }
 
-        private bool fixingVertices = false;
+        private bool fixingVertices;
         public bool FixingVertices
         {
             get { return fixingVertices; }
@@ -46,7 +42,7 @@ namespace BridgeBuilder
             }
         }
 
-        private bool addingVertices = false;
+        private bool addingVertices;
         public bool AddingVertices
         {
             get { return addingVertices; }
@@ -68,11 +64,11 @@ namespace BridgeBuilder
         public class VertexConnector
         {
             public Vertex First;
-            private Interaction interaction;
+            private readonly Interaction interaction;
             public float MaxBoxDistance = 80;
             public float MaxDiagDistance = 120;
 
-            public bool Selected { get { return First != null; } }
+            public bool Selected => First != null;
 
             public VertexConnector(Interaction interaction)
             {
@@ -90,11 +86,11 @@ namespace BridgeBuilder
                     }
                     else // je vybraný první vertex, vybíráme druhý
                     {
-                        Vertex Second = interaction.Hover.FirstOrDefault(v => CanConnect(v.Position));
-                        if (Second != null && Second != First)
+                        Vertex second = interaction.Hover.FirstOrDefault(v => CanConnect(v.Position));
+                        if (second != null && second != First)
                         {
-                            interaction.AddEdge(First, Second);
-                            First = Second;
+                            interaction.AddEdge(First, second);
+                            First = second;
                         }
                         else
                         {
@@ -109,16 +105,16 @@ namespace BridgeBuilder
                 }
             }
 
-            public void Connect(Vertex Second)
+            public void Connect(Vertex second)
             {
                 if (First == null)
                     return;
 
-                if (Second != First && CanConnect(Second.Position))
+                if (second != First && CanConnect(second.Position))
                 {
-                    interaction.AddEdge(First, Second);
+                    interaction.AddEdge(First, second);
                 }
-                First = Second;
+                First = second;
             }
 
             public void Cancel()
@@ -258,14 +254,12 @@ namespace BridgeBuilder
 
         internal void MouseDown(MouseEventArgs e)
         {
-            mouse = e;
-
             // LEVÉ TLAČÍTKO
             if (e.Button == MouseButtons.Left)
             {
                 if (FixingVertices && Hover.Any())
                 {
-                    foreach (var v in Hover) v.Fixed = !v.Fixed;
+                    foreach (Vertex v in Hover) v.Fixed = !v.Fixed;
                     return;
                 }
                     
@@ -276,7 +270,7 @@ namespace BridgeBuilder
                 }
 
                 // levé tlačítko myši přesouvá body
-                if(!Connector.Selected)
+                if (!Connector.Selected)
                     Dragging = Hover.ToList(); // copy selected
 
                 // také vytváří nové spoje (pokud neběží simulace)
@@ -288,7 +282,7 @@ namespace BridgeBuilder
                         PointF candidatePosition = Connector.GetCandidate(MousePosition);
                         // PointF candidatePosition = StickyMousePosition;
                         // pokud existuje nějaký bod poblíž vhodné pozice
-                        var nearCandidate = simulation.Vertices.Where(v => { return candidatePosition.Sub(v.Position).Mag() < v.Radius; });
+                        IEnumerable<Vertex> nearCandidate = simulation.Vertices.Where(v => candidatePosition.Sub(v.Position).Mag() < v.Radius);
                         if (nearCandidate.Any())
                         {
                             // tak spojíme tento blízký bod a označený bod
@@ -329,11 +323,10 @@ namespace BridgeBuilder
 
         internal void MouseMove(MouseEventArgs e)
         {
-            mouse = e;
             MousePosition = new PointF(e.X, e.Y);
             StickyMousePosition = Snap(MousePosition);
 
-            Hover = simulation.Vertices.Where(v => { return MousePosition.Sub(v.Position).Mag() < v.Radius; });
+            Hover = simulation.Vertices.Where(v => MousePosition.Sub(v.Position).Mag() < v.Radius);
             HoverEdges = simulation.Edges.Where(edge =>
             {
                 // https://en.wikipedia.org/wiki/Vector_projection
@@ -349,14 +342,14 @@ namespace BridgeBuilder
                 return scalarProjection > edge.U.Radius && scalarProjection < length - edge.V.Radius && mouseDistance < maxDistance;
             });
 
-            foreach (var v in Dragging)
+            foreach (Vertex v in Dragging)
             {
                 if (simulation.Pause)
                 {
                     v.Position = StickyMousePosition;
                     v.PrevPos = StickyMousePosition;
                     IEnumerable<Edge> affectedEdges = simulation.GetEdges(v);
-                    foreach (var edge in affectedEdges)
+                    foreach (Edge edge in affectedEdges)
                         edge.ResetLength();
                 }
                 else
@@ -368,8 +361,7 @@ namespace BridgeBuilder
 
         internal void MouseUp(MouseEventArgs e)
         {
-            mouse = e;
-            foreach (var v in Dragging) v.ResetTarget();
+            foreach (Vertex v in Dragging) v.ResetTarget();
             Dragging = Enumerable.Empty<Vertex>();
         }
     }

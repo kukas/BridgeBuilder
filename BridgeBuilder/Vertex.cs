@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BridgeBuilder
 {
     [Serializable]
-    class Vertex
+    internal class Vertex
     {
         private Simulation simulation;
 
-        public PointF ConstrainedDelta = new PointF();
-        public int ConstrainedCount = 0;
+        public PointF ConstrainedDelta;
+        public int ConstrainedCount;
         public PointF Position;
         public PointF PrevPos;
         public PointF Force;
@@ -26,7 +19,7 @@ namespace BridgeBuilder
         public float Mass = 1f;
 
         private PointF target;
-        private bool targetSet = false;
+        private bool targetSet;
 
         public Vertex(Simulation simulation, float x, float y)
         {
@@ -34,9 +27,9 @@ namespace BridgeBuilder
             Position = PrevPos = new PointF(x, y);
         }
 
-        public void SetSimulation(Simulation simulation)
+        public void SetSimulation(Simulation s)
         {
-            this.simulation = simulation;
+            simulation = s;
         }
 
         private PointF ComputeForces(float dt)
@@ -47,18 +40,18 @@ namespace BridgeBuilder
             if (simulation.Gravitation)
                 force.Y += simulation.GravitationStrength;
 
-            PointF Velocity = Position.Sub(PrevPos).MultiplyScalar(1f / dt);
+            PointF velocity = Position.Sub(PrevPos).MultiplyScalar(1f / dt);
 
-            var drag = Velocity.MultiplyScalar(-simulation.Damping);
+            PointF drag = velocity.MultiplyScalar(-simulation.Damping);
             force = force.Add(drag);
 
             if (Position.Y + Radius > simulation.Height)
-                force.Y -= (Position.Y + Radius - simulation.Height) * simulation.GroundStrength + Velocity.Y * simulation.GroundDamping;
+                force.Y -= (Position.Y + Radius - simulation.Height) * simulation.GroundStrength + velocity.Y * simulation.GroundDamping;
 
             if (targetSet)
             {
-                var draggingForce = target.Sub(Position).MultiplyScalar(simulation.DraggingStrength);
-                var damping = Velocity.MultiplyScalar(-simulation.DraggingDamping);
+                PointF draggingForce = target.Sub(Position).MultiplyScalar(simulation.DraggingStrength);
+                PointF damping = velocity.MultiplyScalar(-simulation.DraggingDamping);
                 force = force.Add(draggingForce).Add(damping);
             }
             return force;
@@ -75,9 +68,9 @@ namespace BridgeBuilder
             if (Fixed)
                 return;
 
-            PointF NextPos = Position.Add(Position).Sub(PrevPos).Add(ComputeForces(dt).MultiplyScalar(dt * dt));
+            PointF nextPos = Position.Add(Position).Sub(PrevPos).Add(ComputeForces(dt).MultiplyScalar(dt * dt));
             PrevPos = Position;
-            Position = NextPos;
+            Position = nextPos;
         }
 
         public void ResetConstrains()
@@ -95,9 +88,9 @@ namespace BridgeBuilder
                 Position = Position.Add(ConstrainedDelta.MultiplyScalar(1f / ConstrainedCount));
         }
 
-        public void SetTarget(PointF target)
+        public void SetTarget(PointF t)
         {
-            this.target = target;
+            target = t;
             targetSet = true;
         }
         public void ResetTarget()

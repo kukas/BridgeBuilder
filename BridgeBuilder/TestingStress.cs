@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -7,16 +6,16 @@ namespace BridgeBuilder
 {
     internal class TestingStress
     {
-        private Simulation simulation;
+        private readonly Simulation simulation;
 
         private Edge currentRoad;
-        private float currentPosition = 0;
+        private float currentPosition;
 
         public decimal Speed { get; set; } = 150M;
         public decimal Weight { get; set; } = 30000M;
 
-        public bool Started { get { return currentRoad != null; } }
-        public PointF Position = new PointF();
+        public bool Started => currentRoad != null;
+        public PointF Position;
 
         public TestingStress(Simulation simulation)
         {
@@ -25,14 +24,14 @@ namespace BridgeBuilder
 
         public bool StartTest()
         {
-            var roads = simulation.Edges.Where(e => e.IsRoad);
+            IEnumerable<Edge> roads = simulation.Edges.Where(e => e.IsRoad);
 
             if (!roads.Any())
                 return false;
 
             Edge leftmost = roads.First();
 
-            foreach (var road in roads)
+            foreach (Edge road in roads)
                 if (road.U.Position.X < leftmost.U.Position.X)
                     leftmost = road;
 
@@ -50,7 +49,6 @@ namespace BridgeBuilder
             float ratio = currentPosition / currentRoad.Length;
             PointF uPos = currentRoad.U.Position, vPos = currentRoad.V.Position;
             Position = uPos.Add(vPos.Sub(uPos).MultiplyScalar(ratio));
-            // Debug.WriteLine(Position);
             if (ratio > 1)
             {
                 NextRoad();
@@ -67,11 +65,8 @@ namespace BridgeBuilder
 
         private void NextRoad()
         {
-            var roads = simulation.Edges.Where(e => e.IsRoad && e.U == currentRoad.V);
-            if (roads.Any())
-                currentRoad = roads.First();
-            else
-                currentRoad = null;
+            IEnumerable<Edge> roads = simulation.Edges.Where(e => e.IsRoad && e.U == currentRoad.V);
+            currentRoad = roads.FirstOrDefault();
             currentPosition = 0;
         }
     }

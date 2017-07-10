@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BridgeBuilder
 {
     [Serializable]
-    class Edge
+    internal class Edge
     {
         public Vertex U { get; }
         public Vertex V { get; }
 
-        public float CurrentLength { get { return U.Position.Sub(V.Position).Mag(); } }
+        public float CurrentLength => U.Position.Sub(V.Position).Mag();
 
         public float Length;
 
@@ -23,7 +19,7 @@ namespace BridgeBuilder
         {
             if (v.Position.X < u.Position.X)
             {
-                var w = v;
+                Vertex w = v;
                 v = u;
                 u = w;
             }
@@ -34,13 +30,6 @@ namespace BridgeBuilder
             ResetLength();
         }
 
-        public Vertex GetOpposite(Vertex v)
-        {
-            if (V == v)
-                return U;
-            else
-                return V;
-        }
         // https://en.wikipedia.org/wiki/Verlet_integration#Constraints
         // Trik: průměruji všechny přírustky, aby nezáleželo na pořadí aplikování constraints
         // nevýhoda je ta, že jsou constraints mnohem pružnější

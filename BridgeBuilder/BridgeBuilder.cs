@@ -9,25 +9,25 @@ using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
-    public partial class BridgeBuilder : Form
+    public partial class BridgeBuilderForm : Form
     {
-        private Thread rendererThread;
-        private Thread simulationThread;
+        private readonly Thread rendererThread;
+        private readonly Thread simulationThread;
         private bool running = true;
-        private double simulationTime = 0;
+        private double simulationTime;
 
-        private Simulation simulation;
-        private FpsMeter fps = new FpsMeter();
-        private DoubleBuffer db;
+        private readonly Simulation simulation;
+        private readonly FpsMeter fps = new FpsMeter();
+        private readonly DoubleBuffer db;
 
-        private Interaction interaction;
-        private TestingStress testingStress;
+        private readonly Interaction interaction;
+        private readonly TestingStress testingStress;
 
-        private SimulationRenderer simulationRenderer;
-        private InteractionRenderer interactionRenderer;
-        private TestingStressRenderer testingStressRenderer;
+        private readonly SimulationRenderer simulationRenderer;
+        private readonly InteractionRenderer interactionRenderer;
+        private readonly TestingStressRenderer testingStressRenderer;
 
-        public BridgeBuilder()
+        public BridgeBuilderForm()
         {
             InitializeComponent();
             KeyPreview = true; // needed for keyPress event to work
@@ -82,7 +82,7 @@ namespace BridgeBuilder
                 testingStressRenderer.Render(g);
 
                 // draw debugging FPS info
-                double currentFps = Math.Round(fps.FPS, 1);
+                double currentFps = Math.Round(fps.Fps, 1);
                 g.FillRectangle(Brushes.Black, new Rectangle(0, 0, 150, 30));
                 g.DrawString($"fps: {currentFps}", new Font("Arial", 16), new SolidBrush(Color.White), 10, 10);
 
@@ -115,10 +115,10 @@ namespace BridgeBuilder
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            int precision = 1;
-            int maxCycles = 10;
-            float dt = 0.004f;
-            float dtSimulation = dt / precision;
+            const int precision = 1;
+            const int maxCycles = 10;
+            const float dt = 0.004f;
+            const float dtSimulation = dt / precision;
             while (running)
             {
                 Simulation s = simulation;
@@ -171,8 +171,8 @@ namespace BridgeBuilder
         private void exitButton_Click(object sender, EventArgs e)
         {
             running = false;
-            if (rendererThread != null)
-                rendererThread.Join();
+            rendererThread?.Join();
+            simulationThread?.Join();
 
             Close();
         }
@@ -181,9 +181,11 @@ namespace BridgeBuilder
         private void saveButton_Click(object sender, EventArgs e)
         {
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("bridge.bin",
+            Stream stream = new FileStream(
+                                    "bridge.bin",
                                      FileMode.Create,
-                                     FileAccess.Write, FileShare.None);
+                                     FileAccess.Write,
+                                     FileShare.None);
             formatter.Serialize(stream, simulation);
             stream.Close();
         }
@@ -193,7 +195,8 @@ namespace BridgeBuilder
             IFormatter formatter = new BinaryFormatter();
             try
             {
-                Stream stream = new FileStream("bridge.bin",
+                Stream stream = new FileStream(
+                                      "bridge.bin",
                                       FileMode.Open,
                                       FileAccess.Read,
                                       FileShare.Read);
@@ -215,15 +218,15 @@ namespace BridgeBuilder
         private void testButton_Click(object sender, EventArgs e)
         {
             bool success = testingStress.StartTest();
-            if(!success)
+            if (!success)
                 MessageBox.Show("There are no roads on the scene. Testing cancelled.", "Bridge Testing problem", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void BridgeBuilder_FormClosing(object sender, FormClosingEventArgs e)
         {
             running = false;
-            if (rendererThread != null)
-                rendererThread.Join();
+            rendererThread?.Join();
+            simulationThread?.Join();
         }
     }
 }

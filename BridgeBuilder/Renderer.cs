@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace BridgeBuilder
 {
-    abstract class Renderer
+    internal abstract class Renderer
     {
         public abstract void Render(Graphics g);
 

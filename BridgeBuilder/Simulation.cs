@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace BridgeBuilder
 {
     [Serializable]
-    class Simulation
+    internal class Simulation
     {
         public ConcurrentBag<Vertex> Vertices { get; private set; }
         public ConcurrentBag<Edge> Edges { get; private set; }
@@ -25,19 +22,19 @@ namespace BridgeBuilder
         public float GroundStrength = 5000f;
         public float GroundDamping = 5f;
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Width { get; }
+        public int Height { get; }
 
         public bool Pause { get; set; } = true;
         public bool Gravitation { get; set; } = true;
 
         public float MaxStrain = 0.01f;
-        private int RelaxationSteps = 10;
+        private const int relaxationSteps = 10;
 
         public Simulation(int width, int height)
         {
-            this.Width = width;
-            this.Height = height;
+            Width = width;
+            Height = height;
             Vertices = new ConcurrentBag<Vertex>();
             Edges = new ConcurrentBag<Edge>();
         }
@@ -55,21 +52,21 @@ namespace BridgeBuilder
                 newVertices = null;
             }
             if (Pause) return;
-            foreach (var v in Vertices) v.Update(dt);
-            for (int i = 0; i < RelaxationSteps; i++)
+            foreach (Vertex v in Vertices) v.Update(dt);
+            for (int i = 0; i < relaxationSteps; i++)
             {
-                foreach (var v in Vertices) v.ResetConstrains();
-                foreach (var e in Edges) e.Relax();
-                foreach (var v in Vertices) v.ApplyConstrains();
+                foreach (Vertex v in Vertices) v.ResetConstrains();
+                foreach (Edge e in Edges) e.Relax();
+                foreach (Vertex v in Vertices) v.ApplyConstrains();
             }
 
-            var tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
+            IEnumerable<Edge> tooStrained = Edges.Where(e => Math.Abs(1 - e.Length / e.CurrentLength) > MaxStrain);
             if (tooStrained.Any())
                 RemoveEdges(tooStrained);
 
             // tolerance v Y ose - kvůli kolizím se zemí (míček se při kolizi občas na chvíli protuneluje mimo obraz)
-            float d = 50;
-            var tooFar = Vertices.Where(v => v.Position.X < 0 || v.Position.X > Width || v.Position.Y < -d || v.Position.Y > Height+d);
+            const float d = 50;
+            IEnumerable<Vertex> tooFar = Vertices.Where(v => v.Position.X < 0 || v.Position.X > Width || v.Position.Y < -d || v.Position.Y > Height+d);
             if (tooFar.Any())
                 RemoveVertices(tooFar);
         }
@@ -90,14 +87,14 @@ namespace BridgeBuilder
 
         internal void RemoveEdges(IEnumerable<Edge> edgesToRemove)
         {
-            List<Edge> EdgesList = Edges.ToList();
-            newEdges = new ConcurrentBag<Edge>(EdgesList.Except(edgesToRemove));
+            List<Edge> edgesList = Edges.ToList();
+            newEdges = new ConcurrentBag<Edge>(edgesList.Except(edgesToRemove));
         }
 
         internal void RemoveVertices(IEnumerable<Vertex> verticesToRemove)
         {
-            List<Vertex> VerticesList = Vertices.ToList();
-            newVertices = new ConcurrentBag<Vertex>(VerticesList.Except(verticesToRemove));
+            List<Vertex> verticesList = Vertices.ToList();
+            newVertices = new ConcurrentBag<Vertex>(verticesList.Except(verticesToRemove));
             RemoveEdges(Edges.Where(e => verticesToRemove.Contains(e.U) || verticesToRemove.Contains(e.V)));
         }
 
@@ -110,7 +107,7 @@ namespace BridgeBuilder
         {
             Vertices = loadedSimulation.Vertices;
             Edges = loadedSimulation.Edges;
-            foreach (var v in loadedSimulation.Vertices) v.SetSimulation(this);
+            foreach (Vertex v in loadedSimulation.Vertices) v.SetSimulation(this);
         }
 
         internal void Clear()

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BridgeBuilder
+﻿namespace BridgeBuilder
 {
-    static class Utils
+    internal static class Utils
     {
         public static float Clamp(float value, float min, float max)
         {
