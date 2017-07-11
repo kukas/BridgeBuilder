@@ -1,8 +1,12 @@
 # BridgeBuilder
 Bridge builder je hra/hříčka inspirovaná [Bridge Building Game](http://www.bridgebuilder-game.com/). Program simuluje fyziku mostů ve 2D prostředí, umožňuje mosty stavět a testovat s neomezenými konstrukčními možnostmi. Na rozdíl od své předlohy umožňuje stavbu bez zachycování do mřížky s cílem dovolit vytvářet organičtější a zajímavější návrhy.
 
+![animace mostu](screenshots/bridge.gif)
+
 ## Spuštění
-Program je vyvíjen v jazyce C#, pro prostředí .NET Framework 4.5.2
+Program je vyvíjen v jazyce C# v Visual Studiu 2015 pro prostředí .NET Framework 4.5.2. Nevyžaduje žádné závislosti a funguje i v prostředí Mono.
+
+Zkompilovaný program lze stáhnout v [Releases](https://github.com/kukas/BridgeBuilder/releases).
 
 ## Specifikace
 Bridge builder je simulátor stavby mostů, program se skládá ze dvou hlavních částí - stavby a simulace.
