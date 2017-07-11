@@ -49,6 +49,8 @@
             this.addVerticesToggle = new System.Windows.Forms.CheckBox();
             this.fixingToggle = new System.Windows.Forms.CheckBox();
             this.roadToggle = new System.Windows.Forms.CheckBox();
+            this.simulationSpeedUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.speedUpDown)).BeginInit();
@@ -56,6 +58,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -203,6 +206,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.simulationSpeedUpDown);
             this.groupBox1.Controls.Add(this.stressToggle);
             this.groupBox1.Controls.Add(this.pauseToggle);
             this.groupBox1.Controls.Add(this.gravitationToggle);
@@ -282,6 +287,33 @@
             this.roadToggle.Text = "place road [Shift]";
             this.roadToggle.UseVisualStyleBackColor = true;
             // 
+            // simulationSpeedUpDown
+            // 
+            this.simulationSpeedUpDown.DecimalPlaces = 1;
+            this.simulationSpeedUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.simulationSpeedUpDown.Location = new System.Drawing.Point(112, 62);
+            this.simulationSpeedUpDown.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.simulationSpeedUpDown.Name = "simulationSpeedUpDown";
+            this.simulationSpeedUpDown.Size = new System.Drawing.Size(82, 20);
+            this.simulationSpeedUpDown.TabIndex = 18;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(109, 43);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "simulation speed";
+            // 
             // BridgeBuilderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -308,6 +340,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -335,6 +368,8 @@
         private System.Windows.Forms.CheckBox roadToggle;
         private System.Windows.Forms.CheckBox fixingToggle;
         private System.Windows.Forms.CheckBox addVerticesToggle;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown simulationSpeedUpDown;
     }
 }
 

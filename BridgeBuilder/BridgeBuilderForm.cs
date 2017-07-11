@@ -15,6 +15,15 @@ namespace BridgeBuilder
         private readonly Thread simulationThread;
         private bool running = true;
         private double simulationTime;
+        private double simulationSpeed = 1.0;
+        public double SimulationSpeed {
+            get { return simulationSpeed; }
+            set
+            {
+                simulationTime = 0;
+                simulationSpeed = value;
+            }
+        }
 
         private readonly Simulation simulation;
         private readonly FpsMeter fps = new FpsMeter();
@@ -45,6 +54,7 @@ namespace BridgeBuilder
             // one-way databinding (hodnoty nezmění nic jiného než GUI)
             speedUpDown.DataBindings.Add("Value", testingStress, "Speed", true, DataSourceUpdateMode.OnPropertyChanged);
             weightUpDown.DataBindings.Add("Value", testingStress, "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
+            simulationSpeedUpDown.DataBindings.Add("Value", this, "SimulationSpeed", true, DataSourceUpdateMode.OnPropertyChanged);
 
             pauseToggle.DataBindings.Add("Checked", simulation, "Pause", true, DataSourceUpdateMode.OnPropertyChanged);
             gravitationToggle.DataBindings.Add("Checked", simulation, "Gravitation", true, DataSourceUpdateMode.OnPropertyChanged);
@@ -120,7 +130,9 @@ namespace BridgeBuilder
             while (running)
             {
                 Simulation s = simulation;
-                double now = sw.Elapsed.TotalMilliseconds / 1000f;
+                if(simulationTime == 0)
+                    sw.Restart();
+                double now = sw.Elapsed.TotalMilliseconds / 1000f * SimulationSpeed;
 
                 int cycle = 0;
                 while (simulationTime < now && ++cycle < maxCycles)
